@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Context, ICategory } from "@/context/context";
 import { toast } from "sonner";
 import { SelectCategory } from "../selectCategory";
@@ -10,7 +10,7 @@ export default function Navbar() {
   const router = useRouter();
   const path = usePathname();
   const multimedia = path.includes("multimedia");
-  const { token, setToken, setCategory, category, setSelectedCategory } =
+  const { token, setToken, setSelectedCategory } =
     useContext(Context);
 
   const logOut = () => {

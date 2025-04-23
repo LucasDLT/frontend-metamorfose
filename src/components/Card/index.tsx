@@ -1,7 +1,6 @@
 import { Context, Ifotos } from "@/context/context";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import Image from "next/image";
-import { ConfirmModal } from "../ConfirmModal";
 
 interface CardProps extends Ifotos {
   handleDelete?: (id: number) => void;
@@ -16,18 +15,17 @@ export const Card: React.FC<CardProps> = (fotos: CardProps) => {
   const {
     url,
     title,
-    history,
+    
     category,
     createdAt,
     active,
-    globalOrder,
-    categoryOrder,
+
     handleDelete,
     handleUpdate,
     handleModal,
     handleChecked,
     checked,
-    handleCategoryOrderChange
+  
   } = fotos;
 
   const newDate = new Date(createdAt!)
@@ -40,15 +38,8 @@ export const Card: React.FC<CardProps> = (fotos: CardProps) => {
       : url
     : "";
   const { selected } = useContext(Context);
-  const currentOrder = categoryOrder !== undefined ? categoryOrder : globalOrder;
 
-  // Cuando cambiamos el orden, actualizamos el orden correspondiente (global o de categoría)
-  const handleOrderChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newOrder = parseInt(event.target.value, 10);
-    if (handleCategoryOrderChange) {
-      handleCategoryOrderChange(category?.id!, newOrder); // Actualiza el orden de la categoría
-    }
-  };
+
   return (
     <>    
     <div className="aspect-[1.446]  m-1 flex flex-col items-center justify-center rounded font-sans relative z-0 ">
@@ -94,12 +85,7 @@ export const Card: React.FC<CardProps> = (fotos: CardProps) => {
           </button>
         </div>
       )}
-      {/*!selected && (
-        <div className="flex flex-col text-justify text-xs w-full font-afacad">
-          <h1>{title}</h1>
-          <h3>{history}</h3>
-        </div>
-      )*/}
+
       {selected && 
       <input
        type="checkbox" 

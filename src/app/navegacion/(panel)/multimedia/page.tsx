@@ -1,14 +1,14 @@
 "use client";
-import { useContext, useState, useEffect, FormEvent } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Context, ICategory, Ifotos } from "@/context/context";
+import { Context, Ifotos } from "@/context/context";
 import { Card } from "@/components/Card";
 import { Modal } from "@/components/Modal";
 import Image from "next/image";
 import { ConfirmModal } from "@/components/ConfirmModal";
 
 export default function Multimedia() {
-  const { token, fotos, setFotos, loading, error, category, selectedCategory } = useContext(Context);
+  const { token, fotos, setFotos, loading, error, selectedCategory } = useContext(Context);
   const [localFoto, setLocalFoto] = useState<Ifotos[]>([]);  // Fotos por categoría
   const [globalFotos, setGlobalFotos] = useState<Ifotos[]>([]); // Fotos globales
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);

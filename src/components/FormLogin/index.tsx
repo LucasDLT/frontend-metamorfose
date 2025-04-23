@@ -38,6 +38,8 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
       }
       const dataLogin = await response.json();
       localStorage.setItem("token-admin", dataLogin.token);
+      console.log( dataLogin.token);
+      
       setToken({ token: dataLogin.token });
       toast.success("Bienvenida", {
         style: {
@@ -55,6 +57,7 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
       });
       router.push("/");
     } catch (error) {
+      throw new Error("Hubo un error en la solicitud", { cause: error });
       toast.error("email o contraseñas invalidos, vuelve a intentarlo", {
         style: {
           borderRadius: "10px",

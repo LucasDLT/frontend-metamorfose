@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { Context } from "@/context/context";
 
 const Layout = ({ children, }: Readonly <{ children: React.ReactNode }>) => {
-  const {setSelected, selected} = useContext(Context)
+  const {setSelected} = useContext(Context)
 
   const handleSelect =()=>setSelected(true)
   const handleDeselect =()=>setSelected(false)

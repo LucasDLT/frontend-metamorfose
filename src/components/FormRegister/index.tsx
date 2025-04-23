@@ -4,8 +4,6 @@ import { validateForm } from "@/helpers/validate";
 import { Ierror } from "@/types/error.t";
 import { Iuser } from "@/types/user.t";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { set } from "zod";
 interface IformRegisterProps {
   setToggle: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -19,7 +17,6 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
 
   const [errors, setErrors] = useState<Ierror>({});
 
-  const router = useRouter();
 
   const PORT = process.env.NEXT_PUBLIC_API_URL;
 
@@ -41,6 +38,7 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
       return
     }
     const { confirmPassword, ...formData } = form;
+    void confirmPassword
     try {
       const response = await fetch(`${PORT}/register`, {
         method: "POST",

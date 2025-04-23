@@ -1,7 +1,6 @@
 import { Iuser } from "../types/user.t";
 import { Ierror, IformErrors } from "../types/error.t";
 import { Ifotos } from "@/context/context";
-import { toast } from "sonner";
 
 // Función para validar el formulario login
 export const validateForm = (form: Iuser): Ierror => {
