@@ -13,16 +13,6 @@ export const SelectCategory: React.FC<IselectCategoryProps> = ({
 }) => {
   const { category } = useContext(Context);
 
-{ /* const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedCategoryName =
-      event.target.value === "" ? null : event.target.value;
-    const selectedCategory = category.find(
-      (category) => category.name === selectedCategoryName
-    ) || null;
-    if (selectedCategory) {
-      onChange(selectedCategory);
-    }
-  };*/}
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedCategoryName = event.target.value === "" ? null : event.target.value;

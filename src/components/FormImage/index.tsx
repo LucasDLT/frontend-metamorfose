@@ -8,7 +8,7 @@ import { IformErrors } from "@/types/error.t";
 import { validateCargaImgen } from "@/helpers/validate";
 import { SelectCategory } from "@/components/selectCategory";
 import Image from "next/image";
-import ImagePreview from "../MemoPreview";
+import {ImagePreview} from "../MemoPreview";
 import {ConfirmModal} from "../ConfirmModal";
 
 export interface IformImage{
@@ -18,8 +18,7 @@ export interface IformImage{
 }
 
 export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
-  const PORT = process.env.NEXT_PUBLIC_API_URL;
-  const { setFotos, fotos, token, setCategory } = useContext(Context);
+  const { setCategory } = useContext(Context);
   const [error, setError] = useState<IformErrors>({});
   const [selectCategory, setSelectCategory] = useState<boolean>(true);
   const [image, setImage] = useState<File | null>(null);
@@ -164,51 +163,6 @@ export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
     
   };
 
-  {/*const handleConfirmSubmit = async () => {
-    if (!pendingFormData) return;
-  
-    try {
-      await onSubmit(pendingFormData);
-  
-      if (formImg.category?.id === 0) {
-        setCategory((prevCategories: ICategory[]) => {
-          if (
-            !prevCategories.some(
-              (category: ICategory) => category.name === formImg.category?.name
-            )
-          ) {
-            return [...prevCategories, formImg.category as ICategory];
-          }
-          return prevCategories;
-        });
-      }
-  
-      if (mode === "create") {
-        setFormImg({
-          title: "",
-          history: "",
-          category: { id: 0, name: "" },
-          url: null,
-          createdAt: "",
-          active: true,
-        });
-        setPreviewUrl(null);
-      }
-  
-      toast.success(
-        mode === "create"
-          ? "Imagen cargada exitosamente"
-          : "Imagen actualizada exitosamente",
-      );
-    } catch (error) {
-      toast.error("Error al cargar la imagen", { duration: 5000 });
-      console.error("Error en el post de imágenes", error);
-    } finally {
-      setModalIsOpen(false);
-      setPendingFormData(null);
-    }
-  };
-  */}
 
   const handleFile = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

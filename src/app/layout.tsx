@@ -27,7 +27,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-      <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
       <link href="https://fonts.cdnfonts.com/css/bitterslide-evelwhite" rel="stylesheet"/>
       <link href="https://fonts.cdnfonts.com/css/grandiflora-one" rel="stylesheet"/>
       <link href="https://fonts.cdnfonts.com/css/vintage-glory" rel="stylesheet"/>

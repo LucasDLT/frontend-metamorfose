@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, createContext, ReactNode } from "react";
-import { set } from "zod";
 
 export interface Itoken {
   token?: string | null;
@@ -60,10 +59,7 @@ export interface Ivalue {
 export const ContextProvider = ({ children }: IContextProvider) => {
   const PORT = process.env.NEXT_PUBLIC_API_URL;
 
-  const [token, setToken] = useState<Itoken | null>(() => {
-    const storageToken = localStorage.getItem("token-admin");
-    return storageToken ? { token: storageToken } : null;
-  });
+  const [token, setToken] = useState<Itoken | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<boolean>(false);
@@ -80,61 +76,78 @@ export const ContextProvider = ({ children }: IContextProvider) => {
       const response = await fetch(`${PORT}/categories`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token.token}`,
+          Authorization: `Bearer${token.token}`,
           "Content-Type": "application/json",
         },
       });
       if (!response.ok)
         throw new Error("Error en la solicitud de categorias en Contexto");
       const data: ICategory[] = await response.json();
-      console.log("categorias: ", data);
-      data ? setCategory(data) : setCategory([]);
+      if (data) {
+        setCategory(data);
+      }else{
+        setCategory([]);
+      }
     } catch (error) {
-      throw new Error("Error al obtener las categorias");
+      
+      throw new Error("Error al obtener las categorias", { cause: error });
     }
   };
 
   async function getPhotos(token: Itoken) {
-    if (!token) return;
+    if (!token?.token) return;
+    console.log("token", token);
+    console.log("token.token", token.token);
+    console.log("PORT", PORT);
+    
+    
     setLoading(true);
     setError(null);
     try {
       const response = await fetch(`${PORT}/photos`, {
         method: "GET",
         headers: {
-          Authorization: ` Bearer ${token.token}`,
+          Authorization: `Bearer ${token?.token}`,
           "Content-Type": "application/json",
         },
       });
 
       if (!response.ok)
         throw new Error("Error en la solicitud: Fotos del contexto");
-
+      console.log("response", response);
+      
       const data: Ifotos[] = await response.json();
-      console.log("resultado de fotos", data);
+      if (data) {
+        setFotos(data);
+      }else{
+        setFotos([]);
+      }
 
-      data ? setFotos(data) : setFotos([]);
     } catch (error) {
       setError( "Ocurrio un error al obtener las fotos");
-      throw new Error("Error al obtener las fotos");
+      throw new Error("Error al obtener las fotos", { cause: error });
     }
     finally{
       setLoading(false);
   } 
   }
 
-  useEffect(() => {
-    if (token && token.token) {
-      localStorage.setItem("token-admin", token.token);
-      getPhotos(token) 
-      getCategory(token);
-    } else {
-      localStorage.removeItem("token-admin");
-      setFotos([])
-      setCategory([])
-    }
 
+  useEffect(() => {
+    if (!token || !token.token) {
+      localStorage.removeItem("token-admin");
+      setFotos([]);
+      setCategory([]);
+      return;
+    }
+  
+    localStorage.setItem("token-admin", token.token);
+    console.log("token en contexto use effect", token.token);
+  
+    getPhotos(token);
+    getCategory(token);
   }, [token]);
+  
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };
