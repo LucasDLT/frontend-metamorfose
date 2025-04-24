@@ -34,6 +34,10 @@ export interface IContextProps {
   error: string | null;
   selectedCategory: ICategory | null;
   setSelectedCategory: (category: ICategory | null) => void;
+  categoryPage:boolean;
+  setCategoryPage: (category: boolean) => void;
+  globalFotos: Ifotos[] | [];
+  setGlobalFotos: (fotos: Ifotos[]) => void;
 }
 export const Context = createContext<IContextProps>({} as IContextProps);
 
@@ -49,10 +53,12 @@ export const ContextProvider = ({ children }: IContextProvider) => {
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<boolean>(false);
   const [fotos, setFotos] = useState<Ifotos[]>([]);
+  const [globalFotos, setGlobalFotos] = useState<Ifotos[]>([]); // Fotos globales
   const [category, setCategory] = useState<ICategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(null);
+  const [categoryPage, setCategoryPage] = useState<boolean>(false);
   const [hasMounted, setHasMounted] = useState<boolean>(false);
-
+ 
   const value = {
     token,
     setToken,
@@ -66,6 +72,10 @@ export const ContextProvider = ({ children }: IContextProvider) => {
     error,
     setSelectedCategory,
     selectedCategory,
+    categoryPage,
+    setCategoryPage,
+    globalFotos,
+    setGlobalFotos
   };
 
   const getCategory = async (token: Itoken) => {

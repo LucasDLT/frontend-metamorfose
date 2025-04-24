@@ -37,12 +37,13 @@ export default function RootLayout({
                 
                 
       </head>
-      <ContextProvider>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+          >
+          <ContextProvider>
           <Header />
           {children}
+      </ContextProvider>
           <Toaster 
           position="top-right"
           toastOptions={{
@@ -56,7 +57,6 @@ export default function RootLayout({
             
           }}/>
         </body>
-      </ContextProvider>
     </html>
   );
 }
