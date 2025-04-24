@@ -4,13 +4,12 @@ import { useRouter, usePathname } from "next/navigation";
 import { useContext } from "react";
 import { Context, ICategory } from "@/context/context";
 import { toast } from "sonner";
-import { SelectCategory } from "../selectCategory";
 
 export default function Navbar() {
   const router = useRouter();
   const path = usePathname();
   const multimedia = path.includes("multimedia");
-  const { token, setToken, setSelectedCategory } =
+  const { token, setToken, setSelected, selected } =
     useContext(Context);
 
   const logOut = () => {
@@ -28,13 +27,9 @@ export default function Navbar() {
     setToken(null);
     router.push("/");
   };
-  const handleCategoryChange = (selectedCategory: ICategory | null) => {
-    if (selectedCategory !== null) {
-      setSelectedCategory(selectedCategory);
-    } else {
-      setSelectedCategory(null);
-    }
-  };
+
+  const handleSelect =()=>setSelected(!selected)
+
 
   return (
     <nav className="w-[8%] h-60 flex flex-col justify-center items-center text-xs text-white text-center gap-4 fixed z-50 top-[40%] right-[0%] tracking-wide font-afacad  ">
@@ -61,12 +56,14 @@ export default function Navbar() {
       
       )}
       {token && multimedia && (
+          <div className={`trasnform hover:translate-x-[-10%] transition duration-500 ease-in-out ${path ==="/" ? "animate-pulse":""}`}>
+                  <Link className=" hover:text-gray-500 transition duration-300 ease-in-out" href="/navegacion/multimedia" onClick={handleSelect}>REUBICAR</Link>
 
-          <SelectCategory
-            style={{color: 'white', backgroundColor: 'transparent', outline: 'none', letterSpacing: '0.5px', position: 'absolute', top: '75%',  }}
-            onChange={handleCategoryChange}
-          />
-      )}
+        </div>
+      )
+
+      }
+
     </nav>
   );
 }

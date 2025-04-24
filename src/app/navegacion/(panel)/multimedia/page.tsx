@@ -1,22 +1,21 @@
 "use client";
 import { useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Context, Ifotos } from "@/context/context";
+import { Context, ICategory, Ifotos } from "@/context/context";
 import { Card } from "@/components/Card";
 import { Modal } from "@/components/Modal";
 import Image from "next/image";
 import { ConfirmModal } from "@/components/ConfirmModal";
+import { SelectCategory } from "@/components/selectCategory";
 
 export default function Multimedia() {
-  const { token, fotos, setFotos, loading, error, selectedCategory } = useContext(Context);
+  const { token, fotos, setFotos, loading, error, selectedCategory, setSelectedCategory, categoryPage, globalFotos, setGlobalFotos } = useContext(Context);
   const [localFoto, setLocalFoto] = useState<Ifotos[]>([]);  // Fotos por categoría
-  const [globalFotos, setGlobalFotos] = useState<Ifotos[]>([]); // Fotos globales
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedFoto, setSelectedFoto] = useState<Ifotos | null>(null);
   const [idSelected, setIdSelected] = useState<number[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [fotoIdToDelete, setFotoIdToDelete] = useState<number | null>(null);
-
 
   const idslength = idSelected?.length;
   const PORT = process.env.NEXT_PUBLIC_API_URL;
@@ -152,9 +151,22 @@ export default function Multimedia() {
     }
   }, [fotos, token, selectedCategory]);
   
-
+  const handleCategoryChange = (selectedCategory: ICategory | null) => {
+    if (selectedCategory !== null) {
+      setSelectedCategory(selectedCategory);
+    } else {
+      setSelectedCategory(null);
+    }
+  };
   return (
-    <div className="">
+    <div
+   
+  >      {categoryPage && 
+    (<SelectCategory
+        style={{color: 'white', backgroundColor: 'transparent', outline: 'none', letterSpacing: '0.5px', position: 'absolute', top: '0px', left: '-120px'}}
+        onChange={handleCategoryChange}
+      />)}
+
       {token ? (                                                
         <div
           className="grid grid-cols-3 font-afacad backdrop-blur-sm bg-black/50 rounded"
@@ -164,6 +176,9 @@ export default function Multimedia() {
             overflowY: "auto",
            }}
         >
+              
+
+
           {/* Muestra las fotos de la categoría seleccionada o las fotos globales */}
           {selectedCategory ? (
             localFoto.map((foto) => (
