@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useContext } from "react";
-import { Context, ICategory } from "@/context/context";
+import { Context } from "@/context/context";
 import { toast } from "sonner";
 
 export default function Navbar() {
