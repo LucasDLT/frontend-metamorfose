@@ -21,6 +21,8 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
   const { setToken } = useContext(Context);
 
   const PORT = process.env.NEXT_PUBLIC_API_URL;
+  console.log(PORT);
+  
   const router = useRouter();
 
   async function postForm(data: Inputs) {

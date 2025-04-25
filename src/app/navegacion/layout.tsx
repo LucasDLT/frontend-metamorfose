@@ -9,7 +9,6 @@ const Layout = ({ children, }: Readonly <{ children: React.ReactNode }>) => {
   const handleSelectCategoryPage =()=>{  
     
     setCategoryPage(true)
-    setSelectedCategory(null)
 
   }
 
