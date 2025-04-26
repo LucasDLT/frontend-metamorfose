@@ -80,7 +80,7 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
   return (
     <form
       onSubmit={handleSubmit(postForm)}
-      className="grid justify-center mx-auto p-4 w-64 bg-gradient-to-t from-black/80 to-black/10 backdrop-blur-sm rounded-b"
+      className="grid justify-center mx-auto p-4 w-64 bg-gradient-to-t from-black/80 to-black/10 backdrop-blur-sm rounded-b z-50"
     >
       <label className="text-white  text-center m-6">LOGIN</label>
 
