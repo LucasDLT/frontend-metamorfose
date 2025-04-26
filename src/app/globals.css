@@ -38,14 +38,16 @@ body::before {
 
 body::after {
   content: "";
-  position: absolute;
-  bottom: -37.1rem;
+  position: fixed; /* CAMBIO importante: de absolute a fixed */
+  bottom: 0; /* Pegado abajo sin desplazamiento */
   left: 0;
   width: 100%;
-  height: 10cm; 
+  height: 10rem; /* Usa rem/vh mejor que cm */
   background: linear-gradient(to top, rgba(0, 0, 0, 0.921), rgba(0, 0, 0, 0));
-  z-index: 0; /* Asegura que el gradiente esté encima del fondo pero debajo del contenido */
+  pointer-events: none; /* Que no bloquee clicks */
+  z-index: 1; /* Un poquito mayor que 0 para estar sobre el fondo */
 }
+
 
 /* Estilo para la barra de desplazamiento */
 ::-webkit-scrollbar {

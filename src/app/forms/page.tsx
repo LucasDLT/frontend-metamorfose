@@ -7,7 +7,7 @@ export default function Forms(){
     const [toggle, setToggle] = useState<boolean>(false);
 
     return(
-        <main className="grid grid-cols-1 gap-4 mt-16 font-afacad ">
+        <main className="mt-16 font-afacad ">
             {
                 !toggle
                 ?<FormLogin setToggle={setToggle}/>
