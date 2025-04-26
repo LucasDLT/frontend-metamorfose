@@ -6,17 +6,24 @@ import { Card } from "@/components/Card";
 import { Modal } from "@/components/Modal";
 import Image from "next/image";
 import { ConfirmModal } from "@/components/ConfirmModal";
-import { SelectCategory } from "@/components/selectCategory";
+import { PencilLine } from 'lucide-react';
+import {CustomSelectCategory} from "@/components/CustomSelectCategory";
+
 
 export default function Multimedia() {
-  const { token, fotos, setFotos, loading, error, selectedCategory, setSelectedCategory, categoryPage, globalFotos, setGlobalFotos } = useContext(Context);
+  const { token, fotos, setFotos, loading, error, selectedCategory, setSelectedCategory, categoryPage, globalFotos, setGlobalFotos, setCategory } = useContext(Context);
   const [localFoto, setLocalFoto] = useState<Ifotos[]>([]);  // Fotos por categoría
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedFoto, setSelectedFoto] = useState<Ifotos | null>(null);
   const [idSelected, setIdSelected] = useState<number[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [fotoIdToDelete, setFotoIdToDelete] = useState<number | null>(null);
+  const [editedName, setEditedName] = useState(selectedCategory?.name || "");
 
+  useEffect(() => {
+    setEditedName(selectedCategory?.name || ""); // Cada vez que cambia la categoría seleccionada, reseteamos
+  }, [selectedCategory]);
+  
   const idslength = idSelected?.length;
   const PORT = process.env.NEXT_PUBLIC_API_URL;
 
@@ -158,21 +165,72 @@ export default function Multimedia() {
       setSelectedCategory(null);
     }
   };
+
+  const handleUpdateCategory = async (categoryId: number, categoryName: string) => {
+    const confirmDelete = confirm("¿Estás seguro de modificar la categoría?");
+    if (confirmDelete) {
+      try {
+        const response = await fetch(`${PORT}/categories/${categoryId}`, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token?.token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: categoryName }),
+        });
+
+        if (!response.ok) throw new Error("Error actualizando la categoría");
+
+      // Actualizamos el contexto también si querés
+      setCategory((prev) =>
+        prev.map((cat) =>
+          cat.id === categoryId ? { ...cat, name: categoryName } : cat
+        )
+      );
+      } catch (error) {
+        console.error("Error al actualizar la categoría:", error);
+      }
+    }
+  };
+
   return (
-    <div
+    <div className="absolute top-16 right-[-9rem] left-[9rem] z-50">
    
-  >      {categoryPage && 
-    (<SelectCategory
-        style={{color: 'white', backgroundColor: 'transparent', outline: 'none', letterSpacing: '0.5px', position: 'absolute', top: '0px', left: '-120px'}}
+        {categoryPage && 
+    (<CustomSelectCategory
+        style={{color: 'white', backgroundColor: 'transparent', outline: 'none', letterSpacing: '0.5px', position: 'absolute', top: '0px', left: '-103px'}}
         onChange={handleCategoryChange}
-      />)}
+      />)
+      }
+{categoryPage && selectedCategory && (
+  <div className="flex items-center text-white tracking-wide absolute top-[-33px]">
+    <label htmlFor="categoryName">Fotos en categoría: </label>
+
+    <input
+      id="categoryName"
+      type="text"
+      className="text-white bg-transparent outline-none uppercase"
+      value={editedName}
+      onChange={(e) =>
+        setEditedName(e.target.value)
+      }
+    />
+
+<button
+      onClick={() => handleUpdateCategory(selectedCategory?.id as number, editedName)}
+      className="hover:text-red-700 transition duration-300 ease-in-out"
+    >
+      <PencilLine className="w-5 h-5" />
+    </button>
+  </div>
+)}
 
       {token ? (                                                
         <div
-          className="grid grid-cols-3 font-afacad backdrop-blur-sm bg-black/50 rounded"
+          className="grid grid-cols-3 font-afacad backdrop-blur-sm bg-black/50 rounded "
           style={{ scrollBehavior: "smooth",
-            maxHeight: "70vh",
-            height: "70vh",
+            maxHeight: "80vh",
+            height: "76vh",
             overflowY: "auto",
            }}
         >

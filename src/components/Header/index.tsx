@@ -1,17 +1,19 @@
 import Image from "next/image";
 import Titulo from "../../../public/Titulo.png";
 import Navbar from "../Navbar";
+import { LogoutBtn } from "../LogoutBtn";
 
 export default function Header() {
   return (
-    <div className="flex justify-center relative z-50">
+    <div className="relative z-50">
       <Image
         src={Titulo}
         alt={"Titulo Metamorphose"}
-        width={350}
-        height={100}
-        className="flex justify-center mx-auto w-65" 
+        width={500}
+        height={400}
+        className="flex justify-left w-[20%]" 
       />
+      <LogoutBtn />
       <Navbar  />
     </div>
   );

@@ -302,11 +302,11 @@ export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
     <>
     <form
       onSubmit={handleFile}
-      className="flex flex-row gap-4 rounded font-afacad items-center justify-center"
+      className="absolute top-16 right-[-9rem] left-[9rem] flex flex-row rounded font-afacad items-center justify-between z-50"
       method="POST"
     >
       {/*bloque para la imagen */}
-      <div className="grid place-items-center bg-black/80 p-2 rounded">
+      <div className="grid place-items-center bg-gradient-to-t from-black to-black/10 p-2 rounded">
         <h1 className="text-3xl text-center font-bold text-white drop-shadow-[2px_2px_2px_black]">
           CARGA DE IMAGENES
         </h1>
@@ -373,7 +373,8 @@ export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
       </div>
       {/*bloque para los datos adicionales */}
       <div className="flex flex-col items-center h-[480px] w-[300px]">
-        <div className="flex flex-col bg-black/80 w-[250px] text-center rounded p-2.5">
+        <div className="flex flex-col bg-gradient-to-t from-black to-black/8 w-[250px] text-center rounded-t-lg
+ p-2.5">
           <label htmlFor="title">TITULO</label>
           <input
             className="text-white bg-transparent border rounded border-gray-100 focus:outline-none"
@@ -384,7 +385,7 @@ export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
             value={formImg.title}
           />
         </div>
-        <div className="flex flex-col bg-black/80 w-[250px] text-center rounded mt-1">
+        <div className="flex flex-col bg-black/80 w-[250px] text-center  mt-1">
           <div className="flex flex-col p-2.5" >
           <label htmlFor="history">HISTORIA</label>
           <textarea
@@ -406,7 +407,7 @@ export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
         {/* bloque selector para la categoria */}
 
         {selectCategory ? (
-          <div className="flex flex-col bg-black/80 h-[100px] w-[250px] text-center p-2.5 rounded mt-1">
+          <div className="flex flex-col bg-black/80 h-[100px] w-[250px] text-center p-2.5  mt-1">
             <label className="mt-2" htmlFor="category">
               CREAR CATEGORIA
             </label>
@@ -416,7 +417,7 @@ export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
               id="category"
               onChange={handleCategoryInputChange}
               value={formImg.category?.name.toUpperCase() || ""}
-              className="text-white bg-transparent border border-gray-100 rounded focus:outline-none animate-pulse"
+              className="text-white bg-transparent border border-gray-100  focus:outline-none animate-pulse"
             />
             <button
               onClick={handleActiveChange}
@@ -449,7 +450,8 @@ export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
         )}
         {/* bloque para la fecha y el active*/}
         <div className="grid grid-cols-2 text-center mt-1 w-[250px]">
-          <div className="flex flex-col bg-black/80 rounded mr-1">
+          <div className="flex flex-col bg-black/80 rounded-bl-lg
+ mr-1">
             <label htmlFor="createdAt">FECHA</label>
             <input
               type="date"
@@ -461,7 +463,7 @@ export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
             />
           </div>
 
-          <div className="flex flex-col  bg-black/80 rounded">
+          <div className="flex flex-col  bg-black/80 rounded-br-lg">
             <label htmlFor="active">VISIBLE</label>
             <select
               name="active"
@@ -484,11 +486,11 @@ export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
             </select>
           </div>
         </div>
-        <button className="text-sm border-b-2 border-gray-500 mt-2 hover:border-none flex flex-col justify-center items-center rounded-lg  w-40 h-10 bg-gradient-to-t from-black to-zinc/10 ">
+        <button className="text-sm  hover:text-gray-500 flex flex-col justify-center items-center rounded-lg  w-40 h-10 bg-gradient-to-t from-black to-zinc/10 ">
           CARGAR
         </button>
         {/* bloque para ver errores*/}
-        <div className="flex flex-col w-[250px] rounded drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] mt-1 ">
+        <div className="flex flex-col w-[270px] rounded drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ">
           {error.title && (
             <p className="text-red-500 pl-1 text-sm bg-black/70">
               {error.title}
@@ -522,9 +524,10 @@ export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
       {/* bloque para ver el preview*/}
       <div
         className="
-     rounded flex flex-col gap-2 w-[300px] h-[480px] justify-start bg-black/70 overflow-hidden p-2
+     rounded flex flex-col gap-2 w-[300px] h-[480px] justify-start bg-gradient-to-t from-black to-black/10 overflow-hidden p-2
   "
       >
+
         <p className="text-3xl text-center font-bold text-white drop-shadow-[2px_2px_2px_black] mb-2">
           VISTA PREVIA
         </p>
