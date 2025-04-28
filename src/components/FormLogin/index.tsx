@@ -59,7 +59,6 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
       });
       router.push("/");
     } catch (error) {
-      throw new Error("Hubo un error en la solicitud", { cause: error });
       toast.error("email o contraseñas invalidos, vuelve a intentarlo", {
         style: {
           borderRadius: "10px",
@@ -74,6 +73,7 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
           justifyContent: "center",
         },
       });
+      throw new Error("Hubo un error en la solicitud", { cause: error });
     }
   }
 

@@ -8,10 +8,11 @@ import Image from "next/image";
 import { ConfirmModal } from "@/components/ConfirmModal";
 import { PencilLine } from 'lucide-react';
 import {CustomSelectCategory} from "@/components/CustomSelectCategory";
+import { toast } from "sonner";
 
 
 export default function Multimedia() {
-  const { token, fotos, setFotos, loading, error, selectedCategory, setSelectedCategory, categoryPage, globalFotos, setGlobalFotos, setCategory } = useContext(Context);
+  const { token, fotos, setFotos, loading, error, selectedCategory, setSelectedCategory, categoryPage, globalFotos, setGlobalFotos, setCategory, category } = useContext(Context);
   const [localFoto, setLocalFoto] = useState<Ifotos[]>([]);  // Fotos por categoría
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedFoto, setSelectedFoto] = useState<Ifotos | null>(null);
@@ -168,31 +169,80 @@ export default function Multimedia() {
 
   const handleUpdateCategory = async (categoryId: number, categoryName: string) => {
     const confirmDelete = confirm("¿Estás seguro de modificar la categoría?");
-    if (confirmDelete) {
-      try {
-        const response = await fetch(`${PORT}/categories/${categoryId}`, {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token?.token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name: categoryName }),
-        });
-
-        if (!response.ok) throw new Error("Error actualizando la categoría");
-
-      // Actualizamos el contexto también si querés
-      setCategory((prev) =>
-        prev.map((cat) =>
+    if (!confirmDelete) return;
+  
+    try {
+      const response = await fetch(`${PORT}/categories/${categoryId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token?.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: categoryName }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.message || "Error desconocido al actualizar categoría");
+      }
+  
+      const oldCategory = category.find(cat => cat.id === categoryId);
+      const oldCategoryName = oldCategory?.name;
+  
+      setCategory(prev =>
+        prev.map(cat =>
           cat.id === categoryId ? { ...cat, name: categoryName } : cat
         )
       );
-      } catch (error) {
-        console.error("Error al actualizar la categoría:", error);
+  
+      //Actualizo fotos para que la categoria nueva se vea en la galeria
+      if (oldCategoryName) {
+        const updatedFotos = fotos.map(foto => 
+          foto.category?.name === oldCategoryName
+            ? { ...foto, category: { ...foto.category, name: categoryName } }
+            : foto
+        );
+        setFotos(updatedFotos);
       }
+      
+  
+      toast.success("Categoría actualizada correctamente.", {
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+          height: "50px",
+          width: "300px",
+          backgroundColor: "#6666662f",
+          fontFamily: "afacad",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        },
+      });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Error desconocido";
+  
+      console.error("Error al actualizar la categoría:", error);
+      toast.error(errorMessage || "Ocurrió un error inesperado.", {
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+          height: "50px",
+          width: "300px",
+          backgroundColor: "#6666662f",
+          fontFamily: "afacad",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        },
+      });
     }
   };
-
+  
+  
   return (
     <div className="absolute top-16 right-[-9rem] left-[9rem] z-50">
    
