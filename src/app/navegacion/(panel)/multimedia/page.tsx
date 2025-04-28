@@ -109,8 +109,18 @@ const [categoryUpdateData, setCategoryUpdateData] = useState<{ id: number; name:
       const data = await response.json();
       if (data.photos) {
         setFotos(data.photos);
-        
       }
+      if (category.length > 0) {
+        const updatedCategories = category.map((cat) => {
+          const hasPhotos = data.photos.some((foto: Ifotos) => foto.category?.id === cat.id);
+          return {
+            ...cat,
+            images: hasPhotos ? (cat.images || []) : [], // Si no hay fotos, images queda vacío
+          };
+        });
+        setCategory(updatedCategories);
+      }
+    
     } catch (error) {
       console.error(error);
     }
