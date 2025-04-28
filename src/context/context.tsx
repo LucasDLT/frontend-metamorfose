@@ -32,7 +32,7 @@ export interface IContextProps {
   setSelected: (selected: boolean) => void;
   loading: boolean;
   error: string | null;
-  selectedCategory: ICategory | null;
+  selectedCategory: ICategory | null ;
   setSelectedCategory: (category: ICategory | null) => void;
   categoryPage:boolean;
   setCategoryPage: (category: boolean) => void;
@@ -124,6 +124,7 @@ export const ContextProvider = ({ children }: IContextProvider) => {
       setLoading(false);
     }
   };
+  
 
   // Leer el token desde localStorage al montar
   useEffect(() => {
