@@ -20,6 +20,9 @@ export default function Multimedia() {
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [fotoIdToDelete, setFotoIdToDelete] = useState<number | null>(null);
   const [editedName, setEditedName] = useState(selectedCategory?.name || "");
+  const [updateModalIsOpen, setUpdateModalIsOpen] = useState<boolean>(false);
+const [categoryUpdateData, setCategoryUpdateData] = useState<{ id: number; name: string } | null>(null);
+
 
   useEffect(() => {
     setEditedName(selectedCategory?.name || ""); // Cada vez que cambia la categoría seleccionada, reseteamos
@@ -130,6 +133,16 @@ export default function Multimedia() {
       
   };
 
+
+  const confirmUpdateCategory = (categoryId: number, categoryName: string) => {
+
+    setCategoryUpdateData({ id: categoryId, name: categoryName });
+    setUpdateModalIsOpen(true);
+  };
+  
+
+
+
   const handleUpdate = async (id: number) => {
     router.push(`multimedia/${id}`);
   };
@@ -166,10 +179,19 @@ export default function Multimedia() {
       setSelectedCategory(null);
     }
   };
+  const handleConfirmUpdateCategory = async (event: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
+
+    if (!categoryUpdateData) return;
+  
+    await handleUpdateCategory(categoryUpdateData.id, categoryUpdateData.name);
+    setUpdateModalIsOpen(false);
+    setCategoryUpdateData(null);
+  };
+  
 
   const handleUpdateCategory = async (categoryId: number, categoryName: string) => {
-    const confirmDelete = confirm("¿Estás seguro de modificar la categoría?");
-    if (!confirmDelete) return;
+ 
   
     try {
       const response = await fetch(`${PORT}/categories/${categoryId}`, {
@@ -267,7 +289,7 @@ export default function Multimedia() {
     />
 
 <button
-      onClick={() => handleUpdateCategory(selectedCategory?.id as number, editedName)}
+      onClick={() => confirmUpdateCategory(selectedCategory?.id as number, editedName)}
       className="hover:text-red-700 transition duration-300 ease-in-out"
     >
       <PencilLine className="w-5 h-5" />
@@ -348,7 +370,21 @@ export default function Multimedia() {
           REORDENAR
         </button>
       )}
-          <ConfirmModal isOpen={(modalIsOpen)} onClose={() => setModalIsOpen(false)} onConfirm={handleConfirmDelete} title={"Eliminar"} message={"Estas seguro de eliminar esta foto?"} />
+          <ConfirmModal 
+           isOpen={(modalIsOpen)}
+           onClose={() => setModalIsOpen(false)} 
+           onConfirm={handleConfirmDelete} 
+           title={"Eliminar"} 
+           message={"Estas seguro de eliminar esta foto?"} />
+          
+  <ConfirmModal
+    isOpen={(updateModalIsOpen)}
+    onClose={() => setUpdateModalIsOpen(false)}
+    onConfirm={handleConfirmUpdateCategory}
+    title={"Confirmar modificación"}
+    message={`¿Quieres actualizar el nombre de la categoría a "${categoryUpdateData?.name}"?`}
+  />
+
 
     </div>
   );
