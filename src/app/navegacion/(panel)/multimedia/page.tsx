@@ -9,6 +9,22 @@ import { ConfirmModal } from "@/components/ConfirmModal";
 import { PencilLine } from 'lucide-react';
 import {CustomSelectCategory} from "@/components/CustomSelectCategory";
 import { toast } from "sonner";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
+
+
 
 
 export default function Multimedia() {
@@ -23,12 +39,40 @@ export default function Multimedia() {
   const [updateModalIsOpen, setUpdateModalIsOpen] = useState<boolean>(false);
 const [categoryUpdateData, setCategoryUpdateData] = useState<{ id: number; name: string } | null>(null);
 
+const sensors = useSensors(useSensor(PointerSensor, {
+  activationConstraint: {
+    distance: 5,
+  },
+}));
+
+const handleDragEnd = (event: DragEndEvent) => {
+  const { active, over } = event;
+
+  if (active.id !== over?.id) {
+    const items = selectedCategory ? [...localFoto] : [...globalFotos];
+    const oldIndex = items.findIndex((item) => item.id === active.id);
+    const newIndex = items.findIndex((item) => item.id === over?.id);
+
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const updatedItems = arrayMove(items, oldIndex, newIndex);
+
+    if (selectedCategory) {
+      setLocalFoto(updatedItems);
+    } else {
+      setGlobalFotos(updatedItems);
+    }
+    console.log(updatedItems, "updatedItems");
+    // Llamada a tu función personalizada
+    handlePutIds([active.id as number, over?.id as number]);
+  }
+};
+
 
   useEffect(() => {
     setEditedName(selectedCategory?.name || ""); // Cada vez que cambia la categoría seleccionada, reseteamos
   }, [selectedCategory]);
   
-  const idslength = idSelected?.length;
   const PORT = process.env.NEXT_PUBLIC_API_URL;
 
 
@@ -181,7 +225,8 @@ const [categoryUpdateData, setCategoryUpdateData] = useState<{ id: number; name:
       }
     }
   }, [fotos, token, selectedCategory]);
-  
+
+
   const handleCategoryChange = (selectedCategory: ICategory | null) => {
     if (selectedCategory !== null) {
       setSelectedCategory(selectedCategory);
@@ -308,61 +353,48 @@ const [categoryUpdateData, setCategoryUpdateData] = useState<{ id: number; name:
 )}
 
       {token ? (                                                
+        
+                      <OverlayScrollbarsComponent
+              options={{ scrollbars: { autoHide: 'scroll' } }}
+              style={{ 
+                maxHeight: "80vh",
+                height: "76vh",
+                overflowY: "auto",
+               }}
+            >
         <div
           className="grid grid-cols-3 font-afacad backdrop-blur-sm bg-black/50 rounded "
-          style={{ scrollBehavior: "smooth",
-            maxHeight: "80vh",
-            height: "76vh",
-            overflowY: "auto",
-           }}
         >
               
+              <DndContext sensors={sensors} collisionDetection={closestCenter} autoScroll={{ enabled: true }} onDragEnd={handleDragEnd} >
+  <SortableContext
+    items={(selectedCategory ? localFoto : globalFotos).map(f => f.id).filter(id => id !== undefined)}
 
+    strategy={verticalListSortingStrategy}
+  >
+    {(selectedCategory ? localFoto : globalFotos).map((foto) => (
+      <Card
+        key={foto.id}
+        id={foto.id}
+        url={foto.url!}
+        title={foto.title!}
+        history={foto.history}
+        category={foto.category}
+        createdAt={foto.createdAt}
+        active={foto.active}
+        handleDelete={() => confirmDelete(foto.id as number)}
+        handleUpdate={() => handleUpdate(foto.id as number)}
+        handleModal={() => toggleModal(foto as Ifotos)}
+        checked={idSelected.includes(foto.id as number)}
+        handleChecked={(e) =>
+          handleCheckboxChange(foto.id as number, e.target.checked)
+        }
+      />
+    ))}
+  </SortableContext>
+</DndContext>
+      
 
-          {/* Muestra las fotos de la categoría seleccionada o las fotos globales */}
-          {selectedCategory ? (
-            localFoto.map((foto) => (
-              <Card
-                key={foto.id}
-                url={foto.url!}
-                title={foto.title!}
-                history={foto.history}
-                category={foto.category}
-                createdAt={foto.createdAt}
-                active={foto.active}
-                handleDelete={() => confirmDelete(foto.id as number)}
-                handleUpdate={() => handleUpdate(foto.id as number)}
-                handleModal={() => toggleModal(foto as Ifotos)}
-                checked={idSelected.includes(foto.id as number)}
-                handleChecked={(e) =>
-                  handleCheckboxChange(foto.id as number, e.target.checked)
-                }
-              />
-            ))
-          ) : (
-            globalFotos.map((foto) => (
-              <Card
-                key={foto.id}
-                url={foto.url!}
-                title={foto.title!}
-                history={foto.history}
-                category={foto.category}
-                createdAt={foto.createdAt}
-                active={foto.active}
-                handleDelete={() => confirmDelete(foto.id as number)}
-                handleUpdate={() => handleUpdate(foto.id as number)}
-                handleModal={() => toggleModal(foto as Ifotos)}
-                checked={idSelected.includes(foto.id as number)}
-                handleChecked={(e) =>
-                  handleCheckboxChange(foto.id as number, e.target.checked)
-                }
-              />
-            ))
-          )}
-        </div>
-      ) : (
-        <h1>No te encontras registrado</h1>
-      )}
           <Modal isOpen={isModalOpen} onClose={() => toggleModal(null)}>
           <div className=" w-[45vw] h-[70vh]  flex justify-center items-center">
        
@@ -375,11 +407,7 @@ const [categoryUpdateData, setCategoryUpdateData] = useState<{ id: number; name:
 />
           </div>
           </Modal>
-      {idslength === 2 && (
-        <button onClick={() => handlePutIds(idSelected)} className=" absolute top-[-4.5%]  right-2  transform hover:scale-110 transition duration-500 ease-in-out font-afacad fixed z-60  animate-pulse ">
-          REORDENAR
-        </button>
-      )}
+
           <ConfirmModal 
            isOpen={(modalIsOpen)}
            onClose={() => setModalIsOpen(false)} 
@@ -393,9 +421,14 @@ const [categoryUpdateData, setCategoryUpdateData] = useState<{ id: number; name:
     onConfirm={handleConfirmUpdateCategory}
     title={"Confirmar modificación"}
     message={`¿Quieres actualizar el nombre de la categoría a "${categoryUpdateData?.name}"?`}
-  />
+    />
 
 
     </div>
+    </OverlayScrollbarsComponent>
+  ) : null}
+    </div>
   );
-}
+} 
+
+
