@@ -1,3 +1,5 @@
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Context, Ifotos } from "@/context/context";
 import { useContext } from "react";
 import Image from "next/image";
@@ -15,7 +17,7 @@ export const Card: React.FC<CardProps> = (fotos: CardProps) => {
   const {
     url,
     title,
-    
+    id,
     category,
     createdAt,
     active,
@@ -39,10 +41,27 @@ export const Card: React.FC<CardProps> = (fotos: CardProps) => {
     : "";
   const { selected } = useContext(Context);
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: id! });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   return (
     <>    
-    <div className="aspect-[1.446]  m-1 flex flex-col items-center justify-center rounded font-sans relative z-0 ">
+    <div
+     ref={setNodeRef}
+     style={style}
+     {...attributes}
+     {...listeners}
+     className="aspect-[1.446]  m-1 flex flex-col items-center justify-center rounded font-sans relative z-0 ">
       {!selected && (
         <div className="flex flex-row justify-between  text-xs w-full bg-black bg-opacity-80 z-10 font-afacad absolute top-0  ">
           <h2 className="text-gray-300 hover:text-gray-500 uppercase flex alingn-center transition duration-500 ease-in-out">
