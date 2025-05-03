@@ -1,32 +1,36 @@
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { Context, Ifotos } from "@/context/context";
-import { useContext } from "react";
+
+import {  Ifotos } from "@/context/context";
 import Image from "next/image";
 
 interface CardProps extends Ifotos {
   handleDelete?: (id: number) => void;
   handleUpdate?: () => void;
   handleModal?: () => void;
-  handleChecked?: (e: React.ChangeEvent<HTMLInputElement>) => void; //dejo esto aca para un selector de botones que se activa con el panel EDICION tengo que hacer dos bloques de divs para que se seleccione entre uno y otro, un boton que la active y le pase a esta funcion un valor booleano para que se muestre el otro. Se ve entre la vista multimedia y la de edicion de ubicacion.
-  checked?: boolean;
+  onDragStart?: (e: React.DragEvent<HTMLDivElement>, id: number) => void;
+  onDrop?: (e: React.DragEvent<HTMLDivElement>, id: number) => void;
+  onDragOver?: (e: React.DragEvent<HTMLDivElement>) => void;
   handleCategoryOrderChange?: (fotoId: number, newOrder: number) => void;  
+  onDragEnd?: (e: React.DragEvent<HTMLDivElement>) => void;
 }
 
 export const Card: React.FC<CardProps> = (fotos: CardProps) => {
   const {
     url,
     title,
-    id,
+     
     category,
     createdAt,
     active,
-
+ 
     handleDelete,
     handleUpdate,
     handleModal,
-    handleChecked,
-    checked,
+    onDragStart,
+    onDrop,
+    onDragOver,
+    onDragEnd,
+
+
   
   } = fotos;
 
@@ -39,30 +43,20 @@ export const Card: React.FC<CardProps> = (fotos: CardProps) => {
       ? URL.createObjectURL(url)
       : url
     : "";
-  const { selected } = useContext(Context);
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: id! });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+
 
   return (
     <>    
     <div
-     ref={setNodeRef}
-     style={style}
-     {...attributes}
-     {...listeners}
-     className="aspect-[1.446]  m-1 flex flex-col items-center justify-center rounded font-sans relative z-0 ">
-      {!selected && (
+     draggable={true}
+     onDragStart={(e) => onDragStart && onDragStart(e, fotos.id!)}
+     onDragOver={ onDragOver}
+     onDrop={ (e) => onDrop && onDrop(e, fotos.id!)}
+     onDragEnd={onDragEnd}
+    
+     className="aspect-[1.446]  m-1 flex flex-col items-center justify-center rounded font-sans relative z-0 cursor-grab transition-all duration-200 ease-in-out ">
         <div className="flex flex-row justify-between  text-xs w-full bg-black bg-opacity-80 z-10 font-afacad absolute top-0  ">
           <h2 className="text-gray-300 hover:text-gray-500 uppercase flex alingn-center transition duration-500 ease-in-out">
             {category?.name} 
@@ -74,15 +68,14 @@ export const Card: React.FC<CardProps> = (fotos: CardProps) => {
             {newDate}
           </h2>
         </div>
-      )}
+    
       <Image
         src={imageUrl}
         alt={title || "Imagen"}
         width={4120}
         height={2848}
-        className="flex justify-center items-center w-full h-full object-cover hover:opacity-80  transition duration-500 ease-in-out"
+        className="flex justify-center items-center w-full h-full object-cover"
       />
-      {!selected && (
         <div className="flex flex-row justify-between text-xs w-full bg-black bg-opacity-80 z-10 font-afacad absolute bottom-[0px] ">
           <button
             className="text-gray-300 hover:text-gray-500 transition duration-500 ease-in-out"
@@ -103,17 +96,9 @@ export const Card: React.FC<CardProps> = (fotos: CardProps) => {
             ELIMINAR
           </button>
         </div>
-      )}
+    
 
-      {selected && 
-      <input
-       type="checkbox" 
-       name="swap" 
-       id="swap"
-       checked={checked}
-       onChange={handleChecked} 
-       className="absolute top-1 left-1 "
-       />}
+
     </div>
     </>
   );
