@@ -9,7 +9,6 @@ export const checkSession = async () => {
   const data = await response.json();
   console.log("data", data);
   
-  data.autenticated &&
     toast.error("Ya estas logueado", {
       style: {
         borderRadius: "10px",
