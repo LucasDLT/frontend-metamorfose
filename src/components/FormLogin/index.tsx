@@ -18,7 +18,7 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
     formState: { errors },
   } = useForm<Inputs>({ resolver: zodResolver(loginSchema) });
 
-  const { setToken } = useContext(Context);
+  const { setLogin } = useContext(Context);
 
   const PORT = process.env.NEXT_PUBLIC_API_URL;
   console.log(PORT);
@@ -33,16 +33,14 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
+        credentials: "include",
       });
       if (!response.ok) {
         const errorResponse = await response.text();
         throw new Error("Hubo un error en la solicitud" +errorResponse);
       }
-      const dataLogin = await response.json();
-      localStorage.setItem("token-admin", dataLogin.token);
-      console.log( dataLogin.token);
       
-      setToken({ token: dataLogin.token });
+      setLogin(true);
       toast.success("Bienvenida", {
         style: {
           borderRadius: "10px",

@@ -13,7 +13,7 @@ import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 
 export default function Multimedia() {
   const {
-    token,
+    login,
     fotos,
     setFotos,
     loading,
@@ -67,9 +67,9 @@ export default function Multimedia() {
       const response = await fetch(`${PORT}/photos/${id}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${token?.token}`,
           "Content-Type": "application/json",
         },
+        credentials: "include",
       });
       const data = await response.json();
       if (data.photos) {
@@ -86,6 +86,17 @@ export default function Multimedia() {
           };
         });
         setCategory(updatedCategories);
+        toast.success("Foto eliminada",{
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+            height: "20px",
+            width: "200px",
+            backgroundColor: "#6666662f",
+            fontFamily: " afacad",
+          },
+        });
       }
     } catch (error) {
       console.error(error);
@@ -127,7 +138,7 @@ export default function Multimedia() {
 
   // Actualiza los estados de fotos por categoría y fotos globales
   useEffect(() => {
-    if (token && token.token) {
+    if (login) {
       if (selectedCategory) {
         const filteredFotos = fotos.filter(
           (foto) => foto.category?.id === selectedCategory.id
@@ -143,7 +154,7 @@ export default function Multimedia() {
         );
       }
     }
-  }, [fotos, token, selectedCategory]);
+  }, [fotos, login, selectedCategory]);
 
   const handleCategoryChange = (selectedCategory: ICategory | null) => {
     if (selectedCategory !== null) {
@@ -172,10 +183,11 @@ export default function Multimedia() {
       const response = await fetch(`${PORT}/categories/${categoryId}`, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${token?.token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: categoryName }),
+        body: JSON.stringify({ name: categoryName },
+        ),
+        credentials: "include",
       });
 
       const data = await response.json();
@@ -259,7 +271,6 @@ export default function Multimedia() {
         response = await fetch(`${PORT}/photos/updateorder`, {
           method: "PUT",
           headers: {
-            Authorization: `Bearer ${token?.token}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(idsObjet),
@@ -268,11 +279,12 @@ export default function Multimedia() {
         response = await fetch(`${PORT}/photos/updateorderglobal`, {
           method: "PUT",
           headers: {
-            Authorization: `Bearer ${token?.token}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(idsObjet),
+          credentials: "include",
         });
+
       }
       
       if (!response.ok) {
@@ -393,7 +405,7 @@ if (mouseY < rect.top + threshold) {
         </div>
       )}
 
-      {token ? (
+      {login ? (
         <OverlayScrollbarsComponent
         id="scroolPersonalizado"
           options={{ scrollbars: { autoHide: "scroll" } }}
