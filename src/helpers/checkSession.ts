@@ -4,7 +4,6 @@ const PORT = process.env.NEXT_PUBLIC_API_URL;
 
 export const checkSession = async () => {
   const response = await fetch(`${PORT}/session`, {
-    method: "GET",
     credentials: "include",
   });
   const data = await response.json();
