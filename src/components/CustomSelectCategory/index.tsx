@@ -13,7 +13,7 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
   style,
   value,
 }) => {
-  const { category, setCategory, token } = useContext(Context);
+  const { category, setCategory } = useContext(Context);
   const path = usePathname();
   const PORT = process.env.NEXT_PUBLIC_API_URL;
 
@@ -44,7 +44,6 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
         const response = await fetch(`${PORT}/categories/${categoryId}`, {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${token?.token}`,
             "Content-Type": "application/json",
           },
         });

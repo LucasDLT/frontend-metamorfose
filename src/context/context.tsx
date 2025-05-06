@@ -2,8 +2,8 @@
 
 import { useState, useEffect, createContext, ReactNode } from "react";
 
-export interface Itoken {
-  token?: string | null;
+export interface Ilogin {
+  login?: boolean;
 }
 export interface Ifotos {
   id?: number;
@@ -22,13 +22,12 @@ export interface ICategory {
   images?: Ifotos[];
 }
 export interface IContextProps {
-  token: Itoken | null;
-  setToken: (token: Itoken | null) => void;
+  login: boolean;
+  setLogin: (login: boolean) => void;
   fotos: Ifotos[] | [];
   setFotos: (fotos: Ifotos[]) => void;
   category: ICategory[] | [];
   setCategory: (category: ICategory[] | ((prevCategories: ICategory[]) => ICategory[])) => void;
-
   loading: boolean;
   error: string | null;
   selectedCategory: ICategory | null ;
@@ -47,7 +46,7 @@ export interface IContextProvider {
 export const ContextProvider = ({ children }: IContextProvider) => {
   const PORT = process.env.NEXT_PUBLIC_API_URL;
 
-  const [token, setToken] = useState<Itoken | null>(null);
+  const [login, setLogin] = useState<boolean>(false); // Estado de inicio de sesión
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [fotos, setFotos] = useState<Ifotos[]>([]);
@@ -58,13 +57,12 @@ export const ContextProvider = ({ children }: IContextProvider) => {
   const [hasMounted, setHasMounted] = useState<boolean>(false);
  
   const value = {
-    token,
-    setToken,
+    login,
+    setLogin,
     fotos,
     setFotos,
     category,
     setCategory,
-
     loading,
     error,
     setSelectedCategory,
@@ -75,15 +73,15 @@ export const ContextProvider = ({ children }: IContextProvider) => {
     setGlobalFotos
   };
 
-  const getCategory = async (token: Itoken) => {
-    if (!token) return;
+  const getCategory = async (login:boolean) => {
+    if (!login) return;
     try {
       const response = await fetch(`${PORT}/categories`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token.token}`,
           "Content-Type": "application/json",
         },
+        credentials: "include",
       });
       if (!response.ok)
         throw new Error("Error en la solicitud de categorias en Contexto");
@@ -95,8 +93,8 @@ export const ContextProvider = ({ children }: IContextProvider) => {
     }
   };
 
-  const getPhotos = async (token: Itoken) => {
-    if (!token?.token) return;
+  const getPhotos = async (login: boolean) => {
+    if (!login) return;
 
     setLoading(true);
     setError(null);
@@ -104,9 +102,9 @@ export const ContextProvider = ({ children }: IContextProvider) => {
       const response = await fetch(`${PORT}/photos`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token.token}`,
           "Content-Type": "application/json",
         },
+        credentials: "include",
       });
 
       if (!response.ok)
@@ -125,26 +123,43 @@ export const ContextProvider = ({ children }: IContextProvider) => {
 
   // Leer el token desde localStorage al montar
   useEffect(() => {
-    const savedToken = typeof window !== "undefined" ? localStorage.getItem("token-admin") : null;
-    if (savedToken) {
-      setToken({ token: savedToken });
-    }
-    setHasMounted(true);
+    const checkSession = async () => {
+      try{
+        const res = await fetch(`${PORT}/session`, {
+          method: "GET",
+          credentials: "include",
+        })
+        if (res.ok) {
+          setLogin(true);
+        } else {
+          setLogin(false);
+          
+        }
+      }catch (error) {
+        console.error("Error al verificar la sesión:", error);
+        
+        setLogin(false);
+      } finally {
+        setHasMounted(true);
+      }
+    };
+
+    checkSession();
   }, []);
+ 
 
   // Reacciona al cambio de token
   useEffect(() => {
-    if (!token || !token.token) {
-      localStorage.removeItem("token-admin");
+    if (!login) {
+      setLogin(false);
       setFotos([]);
       setCategory([]);
       return;
     }
-
-    localStorage.setItem("token-admin", token.token);
-    getPhotos(token);
-    getCategory(token);
-  }, [token]);
+    setLogin(true);
+    getPhotos(login)
+    getCategory(login);
+  }, [login]);
 
   // Evita render hasta montar
   if (!hasMounted) return null;

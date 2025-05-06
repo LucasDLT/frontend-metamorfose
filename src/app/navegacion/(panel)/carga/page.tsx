@@ -6,15 +6,13 @@ import { Context, Ifotos } from "@/context/context";
 
 export default function Carga() {
 
-  const { fotos, setFotos, token, setCategory } = useContext(Context);
+  const { fotos, setFotos, setCategory } = useContext(Context);
   const PORT=process.env.NEXT_PUBLIC_API_URL
 
   const handleSubmit = async (formData: FormData) => {
          const response = await fetch(`${PORT}/photos/upload`, {
             method: "POST",
-            headers: {
-              Authorization: `Bearer ${token?.token}`,
-            },
+            credentials: "include",
             body: formData,
           });
           const data: { photo: Ifotos } = await response.json();

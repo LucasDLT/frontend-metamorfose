@@ -6,7 +6,7 @@ import { FormImage } from "@/components/FormImage";
 
 export const EditImage = ({ id }: { id: string })=> {
 const PORT = process.env.NEXT_PUBLIC_API_URL;
-  const { token, setFotos } = useContext(Context);
+  const { login, setFotos } = useContext(Context);
   const [dataFetch, setDataFetch] = useState<Ifotos | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -14,7 +14,7 @@ const PORT = process.env.NEXT_PUBLIC_API_URL;
   const numericId = Number(id);
 
   useEffect(() => {
-    if (!token?.token || !numericId) return;
+    if (!login || !numericId) return;
 
     const fetchData = async () => {
       setLoading(true);
@@ -23,9 +23,8 @@ const PORT = process.env.NEXT_PUBLIC_API_URL;
       try {
         const response = await fetch(`${PORT}/photos/id/${numericId}`, {
           method: "GET",
-          headers: {
-            Authorization: `Bearer ${token.token}`,
-          },
+          credentials: "include",
+          
         });
 
         if (!response.ok) throw new Error("Acceso denegado. Token inválido.");
@@ -45,16 +44,14 @@ const PORT = process.env.NEXT_PUBLIC_API_URL;
     };
 
     fetchData();
-  }, [PORT, numericId, token]);
+  }, [PORT, numericId, login]);
 
   const handleEdit = async (formData: FormData) => {
     try {
       const response = await fetch(`${PORT}/photos/update/${numericId}`, {
         method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token?.token}`,
-        },
         body: formData,
+        credentials: "include",
       });
 
       if (!response.ok) throw new Error("Ocurrió un error al actualizar la imagen");
