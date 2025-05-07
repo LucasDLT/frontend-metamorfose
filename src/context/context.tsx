@@ -54,7 +54,6 @@ export const ContextProvider = ({ children }: IContextProvider) => {
   const [category, setCategory] = useState<ICategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(null);
   const [categoryPage, setCategoryPage] = useState<boolean>(false);
-  const [hasMounted, setHasMounted] = useState<boolean>(false);
  
   const value = {
     login,
@@ -139,9 +138,7 @@ export const ContextProvider = ({ children }: IContextProvider) => {
         console.error("Error al verificar la sesión:", error);
         
         setLogin(false);
-      } finally {
-        setHasMounted(true);
-      }
+      } 
     };
 
     checkSession();
@@ -151,18 +148,14 @@ export const ContextProvider = ({ children }: IContextProvider) => {
   // Reacciona al cambio de token
   useEffect(() => {
     if (!login) {
-      setLogin(false);
       setFotos([]);
       setCategory([]);
       return;
     }
-    setLogin(true);
     getPhotos(login)
     getCategory(login);
   }, [login]);
 
-  // Evita render hasta montar
-  if (!hasMounted) return null;
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };
