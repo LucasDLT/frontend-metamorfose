@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { loginSchema } from "@/validation/loginSchema";
 import { Inputs } from "@/types/typeErrors";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { Context } from "@/context/context";
 import { toast } from "sonner";
@@ -23,7 +22,6 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
   const PORT = process.env.NEXT_PUBLIC_API_URL;
   console.log(PORT);
   
-  const router = useRouter();
 
   async function postForm(data: Inputs) {
     try {
@@ -55,7 +53,7 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
           justifyContent: "center",
         },
       });
-      router.push("/");
+      window.location.href = "/";
     } catch (error) {
       toast.error("email o contraseñas invalidos, vuelve a intentarlo", {
         style: {
