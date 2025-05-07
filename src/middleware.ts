@@ -1,27 +1,25 @@
-// middleware.ts
+// middleware.ts (en la raíz del proyecto)
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
+  console.log('[✅ Middleware ejecutado]', request.nextUrl.pathname)
+
   const token = request.cookies.get('token')?.value
-  const isLoginPage = request.nextUrl.pathname === '/forms'
+  const pathname = request.nextUrl.pathname
 
-  // Si NO hay token y NO estás en la página de login => redirigir a /forms
-  if (!token && !isLoginPage) {
-    const loginUrl = new URL('/forms', request.url)
-    return NextResponse.redirect(loginUrl)
+  const isProtectedRoute = pathname.startsWith('/navegacion')
+
+  if (!token && isProtectedRoute) {
+    console.log('🔐 Sin token, redirigiendo a /forms')
+    return NextResponse.redirect(new URL('/forms', request.url))
   }
 
-  // Si HAY token y estás tratando de ir a /forms => redirigir al panel (o a donde quieras)
-  if (token && isLoginPage) {
-    const panelUrl = new URL('/navegacion', request.url)
-    return NextResponse.redirect(panelUrl)
-  }
 
-  // Si todo está bien, continuar
+
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/forms', '/navegacion/:path*'], // protege forms y todo lo debajo de /navegacion
+  matcher: [ '/navegacion/:path*'], // proteger todo lo que empieza con /navegacion
 }
