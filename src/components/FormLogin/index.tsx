@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useContext } from "react";
 import { Context } from "@/context/context";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface FormLoginProps {
   setToggle: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,7 +19,7 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
   } = useForm<Inputs>({ resolver: zodResolver(loginSchema) });
 
   const { setLogin } = useContext(Context);
-
+  const router = useRouter();
   const PORT = process.env.NEXT_PUBLIC_API_URL;
   console.log(PORT);
   
@@ -37,7 +38,7 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
         const errorResponse = await response.text();
         throw new Error("Hubo un error en la solicitud" +errorResponse);
       }
-      
+      document.cookie = 'isLogin=true; path=/' 
       setLogin(true);
       toast.success("Bienvenida", {
         style: {
@@ -53,7 +54,8 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
           justifyContent: "center",
         },
       });
-      window.location.href = "/";
+router.push("/")
+
     } catch (error) {
       toast.error("email o contraseñas invalidos, vuelve a intentarlo", {
         style: {
