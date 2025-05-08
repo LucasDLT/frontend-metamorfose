@@ -120,7 +120,7 @@ export const ContextProvider = ({ children }: IContextProvider) => {
   };
   
 
-  // Leer el token desde localStorage al montar
+  // Leer el token desde el backend al montar
   useEffect(() => {
     const checkSession = async () => {
       try{
@@ -150,6 +150,7 @@ export const ContextProvider = ({ children }: IContextProvider) => {
     if (!login) {
       setFotos([]);
       setCategory([]);
+      document.cookie = "isLogin=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       return;
     }
     getPhotos(login)
