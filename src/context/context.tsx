@@ -123,39 +123,41 @@ export const ContextProvider = ({ children }: IContextProvider) => {
   // Leer el token desde el backend al montar
   useEffect(() => {
     const checkSession = async () => {
-      try{
+      try {
         const res = await fetch(`${PORT}/session`, {
           method: "GET",
           credentials: "include",
-        })
+        });
         if (res.ok) {
           setLogin(true);
+          document.cookie = "isLogin=true; path=/; SameSite=Lax";
         } else {
           setLogin(false);
-          
+          document.cookie = "isLogin=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         }
-      }catch (error) {
-        console.error("Error al verificar la sesión:", error);
-        
+      } catch (error) {
+        console.error("Error al verificar la sesión:", error);
         setLogin(false);
-      } 
+        document.cookie = "isLogin=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      }
     };
-
+  
     checkSession();
   }, []);
+  
  
 
   // Reacciona al cambio de token
   useEffect(() => {
-    if (!login) {
+    if (login) {
+      getPhotos(login);
+      getCategory(login);
+    } else {
       setFotos([]);
       setCategory([]);
-      document.cookie = "isLogin=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      return;
     }
-    getPhotos(login)
-    getCategory(login);
   }, [login]);
+  
 
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
