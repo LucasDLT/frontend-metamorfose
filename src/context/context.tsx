@@ -36,6 +36,10 @@ export interface IContextProps {
   setCategoryPage: (category: boolean) => void;
   globalFotos: Ifotos[] | [];
   setGlobalFotos: (fotos: Ifotos[]) => void;
+  activeFotos: Ifotos[] | [];
+  setActiveFotos: (fotos: Ifotos[]) => void;
+  inactiveFotos: Ifotos[] | [];
+  setInactiveFotos: (fotos: Ifotos[]) => void;
 }
 export const Context = createContext<IContextProps>({} as IContextProps);
 
@@ -54,6 +58,8 @@ export const ContextProvider = ({ children }: IContextProvider) => {
   const [category, setCategory] = useState<ICategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(null);
   const [categoryPage, setCategoryPage] = useState<boolean>(false);
+  const [activeFotos, setActiveFotos] = useState<Ifotos[]>([]);
+  const [inactiveFotos, setInactiveFotos] = useState<Ifotos[]>([]);
  
   const value = {
     login,
@@ -69,7 +75,11 @@ export const ContextProvider = ({ children }: IContextProvider) => {
     categoryPage,
     setCategoryPage,
     globalFotos,
-    setGlobalFotos
+    setGlobalFotos,
+    activeFotos,
+    setActiveFotos,
+    inactiveFotos,
+    setInactiveFotos,
   };
 
   const getCategory = async (login:boolean) => {
@@ -118,7 +128,50 @@ export const ContextProvider = ({ children }: IContextProvider) => {
       setLoading(false);
     }
   };
+
+  const getActiveFotos = async (login:boolean)=>{
+    if (!login) return;
+    try {
+      const response = await fetch (`${PORT}/photos/active`,{
+        method:'GET',
+        credentials:'include', 
+        headers:{
+          "Content-Type":"application/json"
+        }
+      })
+      const data:Ifotos[]= await response.json();
+      console.log("fotos activas",data);
+      
+      setActiveFotos(data || [])
+    } catch (error) {
+      setError("Ocurrio un error al obtener las fotos activas")
+      throw new Error("Error al obtener las fotos activas", {cause:error})
+    } finally{
+      setLoading(false)
+    }
+  }
   
+  const getInactiveFotos = async (login:boolean)=>{
+    if(!login) return
+    try {
+      const response = await fetch(`${PORT}/photos/inactive`,{
+        method:'GET',
+        credentials:'include',
+        headers:{
+          "Content-Type":"application/json"
+        }
+      })
+      const data:Ifotos[]=await response.json()
+      console.log("fotos inactivas",data);
+      
+      setInactiveFotos(data || [])
+    } catch (error) {
+      setError("Ocurrio un error al obtener las fotos activas")
+      throw new Error("Error al obtener las fotos activas", {cause:error})
+    }finally{
+      setLoading(false)
+    }
+  }
 
   // Leer el token desde el backend al montar
   useEffect(() => {
@@ -152,9 +205,13 @@ export const ContextProvider = ({ children }: IContextProvider) => {
     if (login) {
       getPhotos(login);
       getCategory(login);
+      getActiveFotos(login)
+      getInactiveFotos(login)
     } else {
       setFotos([]);
       setCategory([]);
+      getActiveFotos( false)
+      getInactiveFotos( false)
     }
   }, [login]);
   
