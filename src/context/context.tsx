@@ -40,6 +40,9 @@ export interface IContextProps {
   setActiveFotos: (fotos: Ifotos[]) => void;
   inactiveFotos: Ifotos[] | [];
   setInactiveFotos: (fotos: Ifotos[]) => void;
+  getActiveFotos: (login: boolean) => Promise<void>;
+getInactiveFotos: (login: boolean) => Promise<void>;
+
 }
 export const Context = createContext<IContextProps>({} as IContextProps);
 
@@ -61,26 +64,6 @@ export const ContextProvider = ({ children }: IContextProvider) => {
   const [activeFotos, setActiveFotos] = useState<Ifotos[]>([]);
   const [inactiveFotos, setInactiveFotos] = useState<Ifotos[]>([]);
  
-  const value = {
-    login,
-    setLogin,
-    fotos,
-    setFotos,
-    category,
-    setCategory,
-    loading,
-    error,
-    setSelectedCategory,
-    selectedCategory,
-    categoryPage,
-    setCategoryPage,
-    globalFotos,
-    setGlobalFotos,
-    activeFotos,
-    setActiveFotos,
-    inactiveFotos,
-    setInactiveFotos,
-  };
 
   const getCategory = async (login:boolean) => {
     if (!login) return;
@@ -215,6 +198,28 @@ export const ContextProvider = ({ children }: IContextProvider) => {
     }
   }, [login]);
   
+  const value = {
+    login,
+    setLogin,
+    fotos,
+    setFotos,
+    category,
+    setCategory,
+    loading,
+    error,
+    setSelectedCategory,
+    selectedCategory,
+    categoryPage,
+    setCategoryPage,
+    globalFotos,
+    setGlobalFotos,
+    activeFotos,
+    setActiveFotos,
+    inactiveFotos,
+    setInactiveFotos,
+    getActiveFotos,
+    getInactiveFotos
+  };
 
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

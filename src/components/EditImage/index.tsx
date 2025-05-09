@@ -6,7 +6,7 @@ import { FormImage } from "@/components/FormImage";
 
 export const EditImage = ({ id }: { id: string })=> {
 const PORT = process.env.NEXT_PUBLIC_API_URL;
-  const { login, setFotos } = useContext(Context);
+  const { login, setFotos, setActiveFotos, setInactiveFotos } = useContext(Context);
   const [dataFetch, setDataFetch] = useState<Ifotos | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,12 +52,27 @@ const PORT = process.env.NEXT_PUBLIC_API_URL;
         method: "PUT",
         body: formData,
         credentials: "include",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
       });
 
       if (!response.ok) throw new Error("Ocurrió un error al actualizar la imagen");
 
+
       const data = await response.json();
-      setFotos(data.photo);
+      const updatedFotos = data.photo as Ifotos[];
+      
+      // Seteo general
+      setFotos(updatedFotos);
+      
+      // Separo activos e inactivos
+      setActiveFotos(updatedFotos.filter(foto => foto.active));
+      setInactiveFotos(updatedFotos.filter(foto => !foto.active));
+      
+
+
+          
     } catch (error) {
       console.error(error);
     }
