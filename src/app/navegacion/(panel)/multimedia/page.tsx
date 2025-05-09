@@ -406,6 +406,7 @@ const getFotosToDisplay = () => {
       ): <IsActiveFotoBtn
       onClickActive={() => setFilterType("active")}
       onClickInactive={() => setFilterType("inactive")}
+      onClickAll={() => setFilterType("all")}
       />
       }
       {categoryPage && selectedCategory && (
