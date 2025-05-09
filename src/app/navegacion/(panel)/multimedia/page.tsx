@@ -10,6 +10,7 @@ import { PencilLine } from "lucide-react";
 import { CustomSelectCategory } from "@/components/CustomSelectCategory";
 import { toast } from "sonner";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
+import { IsActiveFotoBtn } from "@/components/IsAtiveFotoBtn";
 
 export default function Multimedia() {
   const {
@@ -25,6 +26,8 @@ export default function Multimedia() {
     setGlobalFotos,
     setCategory,
     category,
+    activeFotos,
+    inactiveFotos,
   } = useContext(Context);
   const [localFoto, setLocalFoto] = useState<Ifotos[]>([]); // Fotos por categoría
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -32,6 +35,7 @@ export default function Multimedia() {
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [fotoIdToDelete, setFotoIdToDelete] = useState<number | null>(null);
   const [editedName, setEditedName] = useState(selectedCategory?.name || "");
+  const [filterType, setFilterType] = useState<"active" | "inactive" | "all">("all");
   const [updateModalIsOpen, setUpdateModalIsOpen] = useState<boolean>(false);
   const [categoryUpdateData, setCategoryUpdateData] = useState<{
     id: number;
@@ -364,11 +368,29 @@ if (mouseY < rect.top + threshold) {
 
 };
 
+//funcion para el mapeo de estados de las fotos
+const getFotosToDisplay = () => {
+  if (categoryPage && selectedCategory) {
+    return localFoto;
+  }
+
+  if (filterType === "active") {
+    return activeFotos;
+  }
+
+  if (filterType === "inactive") {
+    return inactiveFotos;
+  }
+
+  return globalFotos;
+};
+
+
   return (
     <div className="absolute top-16 right-[-9rem] left-[9rem] z-50"
 
     >
-      {categoryPage && (
+      {categoryPage ? (
         <CustomSelectCategory
           style={{
             color: "white",
@@ -381,7 +403,11 @@ if (mouseY < rect.top + threshold) {
           }}
           onChange={handleCategoryChange}
         />
-      )}
+      ): <IsActiveFotoBtn
+      onClickActive={() => setFilterType("active")}
+      onClickInactive={() => setFilterType("inactive")}
+      />
+      }
       {categoryPage && selectedCategory && (
         <div className="flex items-center text-white tracking-wide absolute top-[-33px]">
           <label htmlFor="categoryName">Fotos en categoría: </label>
@@ -419,7 +445,7 @@ if (mouseY < rect.top + threshold) {
           <div 
           className="grid grid-cols-3 font-afacad  rounded h-full ">
            
-                {(selectedCategory ? localFoto : globalFotos).map((foto) => (
+                {getFotosToDisplay().map((foto) => (
                   <Card
                   key={foto.id}
                   id={foto.id}
