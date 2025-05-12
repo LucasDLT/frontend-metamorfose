@@ -7,15 +7,15 @@ import { Trash2 } from "lucide-react";
 import { IselectCategoryProps } from "../selectCategory";
 
 
-
 export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
   onChange,
   style,
   value,
+  onRequestDeleteCategory
 }) => {
-  const { category, setCategory } = useContext(Context);
+  const { category } = useContext(Context);
+
   const path = usePathname();
-  const PORT = process.env.NEXT_PUBLIC_API_URL;
 
   const isMultimediaPage = path === "/navegacion/multimedia";
   const isMultimediaDetail = path.startsWith("/multimedia/") && path !== "/multimedia";
@@ -37,26 +37,8 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
     setIsOpen(false);
   };
 
-  const handleDeleteCategory = async (categoryId: number) => {
-    const confirmDelete = confirm("¿Estás seguro de eliminar la categoría?");
-    if (confirmDelete) {
-      try {
-        const response = await fetch(`${PORT}/categories/${categoryId}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+  
 
-        if (!response.ok) throw new Error("Error eliminando la categoría");
-
-        // Actualizamos la lista en el contexto
-        setCategory((prev) => prev.filter((cat) => cat.id !== categoryId));
-      } catch (error) {
-        console.error("Error al eliminar categoría:", error);
-      }
-    }
-  };
 
   return (
     <div className=" ml-[-36px] w-[8.5rem]" style={style}>
@@ -102,7 +84,7 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
                 <button
                   onClick={(e) => {
                     e.stopPropagation(); // Evita que se dispare selección al hacer click en borrar
-                    handleDeleteCategory(categoria.id);
+                    onRequestDeleteCategory?.(categoria.id);
                   }}
                   className="ml-2"
                 >

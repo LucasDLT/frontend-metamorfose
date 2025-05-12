@@ -102,3 +102,25 @@ input[type="file"]::-webkit-file-upload-button:hover {
   transition: all 0.3s ease-in-out;
   color: black ;
 }
+
+@keyframes wave {
+  0% {
+    background-position-x: 0;
+  }
+  100% {
+    background-position-x: 200px; /* Igual al ancho del SVG */
+  }
+}
+
+/* Clases personalizadas */
+.bg-wave {
+  background-image: url("data:image/svg+xml,%3Csvg width='1200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23ffffff' d='M0,100 C300,200 900,0 1200,100 L1200,200 L0,200 Z'/%3E%3C/svg%3E");
+  background-size: 200px 123%; /* Igual al SVG */
+  background-repeat: repeat-x; /* Para repetir sin cortes */
+  background-position-y: bottom; /* Opcional, depende de tu diseño */
+}
+
+.animate-wave {
+  animation: wave 2s linear infinite; /* 4s para que se vea más fluido, ajustable */
+  animation-direction: reverse;
+}

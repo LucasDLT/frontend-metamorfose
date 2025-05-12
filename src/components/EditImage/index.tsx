@@ -3,22 +3,24 @@
 import { useContext, useEffect, useState } from "react";
 import { Context, Ifotos } from "@/context/context";
 import { FormImage } from "@/components/FormImage";
+import { useRouter } from "next/navigation";
+
 
 export const EditImage = ({ id }: { id: string })=> {
 const PORT = process.env.NEXT_PUBLIC_API_URL;
-  const { login, setFotos, setActiveFotos, setInactiveFotos } = useContext(Context);
+  const { login, setFotos, setActiveFotos, setInactiveFotos, setLoading, setGlobalError, getActiveFotos, getInactiveFotos, getCategory } = useContext(Context);
   const [dataFetch, setDataFetch] = useState<Ifotos | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   const numericId = Number(id);
 
   useEffect(() => {
     if (!login || !numericId) return;
 
-    const fetchData = async () => {
+    const fetchData = async ( login: boolean, numericId: number) => {
+      if (!login) return;
       setLoading(true);
-      setError(null);
 
       try {
         const response = await fetch(`${PORT}/photos/id/${numericId}`, {
@@ -32,7 +34,7 @@ const PORT = process.env.NEXT_PUBLIC_API_URL;
         const data: Ifotos = await response.json();
         setDataFetch(data);
       } catch (error) {
-        setError(
+        setGlobalError(
           error instanceof Error
             ? error.message
             : "Ocurrió un error desconocido"
@@ -43,21 +45,22 @@ const PORT = process.env.NEXT_PUBLIC_API_URL;
       }
     };
 
-    fetchData();
+    fetchData( login, numericId);
   }, [PORT, numericId, login]);
 
-  const handleEdit = async (formData: FormData) => {
+  const handleEdit = async (formData: FormData,login: boolean, numericId?: number) => {
+    
+    if (!login || !numericId) return;
+    numericId = Number(numericId);
+    setLoading(true);
     try {
       const response = await fetch(`${PORT}/photos/update/${numericId}`, {
         method: "PUT",
         body: formData,
         credentials: "include",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        }
       });
 
-      if (!response.ok) throw new Error("Ocurrió un error al actualizar la imagen");
+      if (!response.ok) throw new Error("Ocurrió un error al actualizar la imagen por que el id es: "+numericId);
 
 
       const data = await response.json();
@@ -75,14 +78,25 @@ const PORT = process.env.NEXT_PUBLIC_API_URL;
           
     } catch (error) {
       console.error(error);
+      setGlobalError(`${error}`);
+    }finally{
+      setLoading(false)
+      getActiveFotos(login);
+      getInactiveFotos(login);
+      getCategory(login);
+      router.push("/navegacion/multimedia");
     }
   };
 
-  if (loading) return <div>Cargando...</div>;
-  if (error) return <div>Error: {error}</div>;
+
 
   return dataFetch ? (
-    <FormImage defaultValue={dataFetch} mode="edit" onSubmit={handleEdit} />
+    <FormImage
+  defaultValue={dataFetch}
+  mode="edit"
+  onSubmit={(formData, login) => handleEdit(formData, login, numericId)}
+/>
+
   ) : (
     <div>No se encontraron datos</div>
   );

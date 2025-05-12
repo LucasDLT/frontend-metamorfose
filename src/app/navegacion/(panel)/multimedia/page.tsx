@@ -12,13 +12,12 @@ import { toast } from "sonner";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import { IsActiveFotoBtn } from "@/components/IsAtiveFotoBtn";
 
+
 export default function Multimedia() {
   const {
     login,
     fotos,
     setFotos,
-    loading,
-    error,
     selectedCategory,
     setSelectedCategory,
     categoryPage,
@@ -28,6 +27,11 @@ export default function Multimedia() {
     category,
     activeFotos,
     inactiveFotos,
+    setLoading,
+    getActiveFotos,
+    getInactiveFotos,
+    setActiveFotos,
+    setInactiveFotos,
   } = useContext(Context);
   const [localFoto, setLocalFoto] = useState<Ifotos[]>([]); // Fotos por categoría
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -37,15 +41,14 @@ export default function Multimedia() {
   const [editedName, setEditedName] = useState(selectedCategory?.name || "");
   const [filterType, setFilterType] = useState<"active" | "inactive" | "all">("all");
   const [updateModalIsOpen, setUpdateModalIsOpen] = useState<boolean>(false);
+  const [categoryIdToDelete, setCategoryIdToDelete, ] = useState<number| null>(null);
+  const [openModalDeleteCategory, setOpenModalDeleteCategory] = useState<boolean>(false);
   const [categoryUpdateData, setCategoryUpdateData] = useState<{
     id: number;
     name: string;
   } | null>(null);
-  
-
   const router = useRouter();
 
-  
   useEffect(() => {
     setEditedName(selectedCategory?.name || ""); // Cada vez que cambia la categoría seleccionada, reseteamos
   }, [selectedCategory]);
@@ -53,7 +56,51 @@ export default function Multimedia() {
   const PORT = process.env.NEXT_PUBLIC_API_URL;
 
 
+  const handleRequestDelete = (categoryId: number) => {
+    setCategoryIdToDelete(categoryId);
+    setOpenModalDeleteCategory(true);
+  };
 
+  const handleDeleteCategory = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event?.preventDefault();
+    if (!categoryIdToDelete) return;
+      setLoading(true);
+      try {
+        const response = await fetch(`${PORT}/categories/${categoryIdToDelete}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        if (!response.ok) throw new Error("Error eliminando la categoría");
+
+        // Actualizamos la lista en el contexto
+        setCategory((prev) => prev.filter((cat) => cat.id !== categoryIdToDelete));
+        toast.success("categoría eliminada",{
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+            height: "20px",
+            width: "200px",
+            backgroundColor: "#6666662f",
+            fontFamily: " afacad",
+          },
+        });
+      } catch (error) {
+        console.error("Error al eliminar categoría:", error);
+      }finally {
+        setLoading(false);
+        setOpenModalDeleteCategory(false);
+        setCategoryIdToDelete(null);
+        setEditedName("");
+      }
+    
+  };
 
  
   const toggleModal = (foto: Ifotos | null) => {
@@ -62,10 +109,9 @@ export default function Multimedia() {
   };
 
 
-  const handleDelete = async (id: number) => {
-    console.log("foto eliminada", id);
-    if (loading) return <div>Cargando fotos...</div>;
-    if (error) return <div>{error}</div>;
+  const handleDelete = async (login: boolean, id: number) => {
+    if (!login) return;
+  setLoading(true)
 
     try {
       const response = await fetch(`${PORT}/photos/${id}`, {
@@ -104,6 +150,11 @@ export default function Multimedia() {
       }
     } catch (error) {
       console.error(error);
+    }finally {
+      getActiveFotos(login);
+      getInactiveFotos(login);
+      setLoading(false);
+
     }
   };
 
@@ -119,7 +170,7 @@ export default function Multimedia() {
     if (fotoIdToDelete == null) return;
     console.log("fotoIdToDelete", fotoIdToDelete);
 
-    await handleDelete(fotoIdToDelete);
+    await handleDelete(login, fotoIdToDelete);
     setModalIsOpen(false);
     setFotoIdToDelete(null);
   };
@@ -156,6 +207,8 @@ export default function Multimedia() {
         setGlobalFotos(
           fotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.globalOrder!)
         );
+setActiveFotos(activeFotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.globalOrder!));
+   setInactiveFotos(inactiveFotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.globalOrder!));     inactiveFotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.globalOrder!);
       }
     }
   }, [fotos, login, selectedCategory]);
@@ -183,6 +236,7 @@ export default function Multimedia() {
     categoryId: number,
     categoryName: string
   ) => {
+    setLoading(true);
     try {
       const response = await fetch(`${PORT}/categories/${categoryId}`, {
         method: "PUT",
@@ -254,16 +308,18 @@ export default function Multimedia() {
           justifyContent: "center",
         },
       });
+    }finally {
+      setLoading(false);
     }
   };
     
   const handlePutIds = async (ids: number[]) => {
-    console.log("entre en la funcion handlePutIds y recibi los ids", ids);
-    
+
     if (ids.length !== 2) {
       alert("no se recibieron ids en handlePutIds");
       return;
     }
+    setLoading(true);
     const idsObjet = {
       id1: ids[0],
       id2: ids[1],
@@ -278,6 +334,8 @@ export default function Multimedia() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(idsObjet),
+          credentials: "include",
+
         });
       } else {
         response = await fetch(`${PORT}/photos/updateorderglobal`, {
@@ -297,9 +355,13 @@ export default function Multimedia() {
       const data = await response.json();
       if (data.photos) {
         setFotos(data.photos);
+        setActiveFotos(data.photos.filter((fotos: Ifotos) => fotos.active));
+        setInactiveFotos(data.photos.filter((fotos: Ifotos) => !fotos.active));
       }
     } catch (error) {
       console.error("Error al intercambiar fotos:", error);
+    }finally {
+      setLoading(false);
     }
   };
   const handleDrop = async (event: React.DragEvent<HTMLDivElement>, dropTargetId: number) => {
@@ -402,6 +464,7 @@ const getFotosToDisplay = () => {
             left: "-103px",
           }}
           onChange={handleCategoryChange}
+          onRequestDeleteCategory={handleRequestDelete}
         />
       ): <IsActiveFotoBtn
       onClickActive={() => setFilterType("active")}
@@ -466,7 +529,13 @@ const getFotosToDisplay = () => {
                   onDragEnd={handleDragEnd}      
                   />
                 ))}
-
+            <ConfirmModal
+              isOpen={openModalDeleteCategory}
+              onClose={() => setOpenModalDeleteCategory(false)}
+              onConfirm={handleDeleteCategory}
+              title={"Eliminar"}
+              message={"Estas seguro de eliminar esta categoría?"}
+            />
  
 
             <ConfirmModal
