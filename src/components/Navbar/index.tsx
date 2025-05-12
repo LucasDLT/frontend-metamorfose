@@ -3,7 +3,6 @@ import Link from "next/link";
 import {  usePathname } from "next/navigation";
 import { useContext } from "react";
 import { Context } from "@/context/context";
-
 export default function Navbar() {
   const path = usePathname();
   const { login } =

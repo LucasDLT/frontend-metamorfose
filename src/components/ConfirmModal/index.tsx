@@ -1,7 +1,7 @@
 interface IConfirmModal {
     isOpen: boolean;
     onClose: () => void;
-    onConfirm?: (event: React.FormEvent<HTMLFormElement>) => Promise<void> ;
+    onConfirm: ( event: React.FormEvent<HTMLFormElement>) => Promise<void> ;
     title: string;
     message: string;
 }

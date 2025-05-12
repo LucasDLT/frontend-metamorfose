@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, createContext, ReactNode } from "react";
+import { Loader } from "@/components/Loader";
 
 export interface Ilogin {
   login?: boolean;
@@ -29,7 +30,7 @@ export interface IContextProps {
   category: ICategory[] | [];
   setCategory: (category: ICategory[] | ((prevCategories: ICategory[]) => ICategory[])) => void;
   loading: boolean;
-  error: string | null;
+  globalError: string | null;
   selectedCategory: ICategory | null ;
   setSelectedCategory: (category: ICategory | null) => void;
   categoryPage:boolean;
@@ -41,8 +42,10 @@ export interface IContextProps {
   inactiveFotos: Ifotos[] | [];
   setInactiveFotos: (fotos: Ifotos[]) => void;
   getActiveFotos: (login: boolean) => Promise<void>;
-getInactiveFotos: (login: boolean) => Promise<void>;
-
+  getInactiveFotos: (login: boolean) => Promise<void>;
+  setLoading: (loading: boolean) => void;
+  setGlobalError: (error: string | null) => void;
+  getCategory: (login: boolean) => Promise<void>;
 }
 export const Context = createContext<IContextProps>({} as IContextProps);
 
@@ -55,7 +58,7 @@ export const ContextProvider = ({ children }: IContextProvider) => {
 
   const [login, setLogin] = useState<boolean>(false); // Estado de inicio de sesión
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [globalError, setGlobalError] = useState<string | null>(null);
   const [fotos, setFotos] = useState<Ifotos[]>([]);
   const [globalFotos, setGlobalFotos] = useState<Ifotos[]>([]); // Fotos globales
   const [category, setCategory] = useState<ICategory[]>([]);
@@ -67,6 +70,7 @@ export const ContextProvider = ({ children }: IContextProvider) => {
 
   const getCategory = async (login:boolean) => {
     if (!login) return;
+    setLoading(true);
     try {
       const response = await fetch(`${PORT}/categories`, {
         method: "GET",
@@ -81,15 +85,16 @@ export const ContextProvider = ({ children }: IContextProvider) => {
       const data: ICategory[] = await response.json();
       setCategory(data || []);
     } catch (error) {
+      setGlobalError("Ocurrio un error al obtener las categorias");
       throw new Error("Error al obtener las categorias", { cause: error });
+    }finally{
+      setLoading(false)
     }
   };
 
   const getPhotos = async (login: boolean) => {
     if (!login) return;
-
     setLoading(true);
-    setError(null);
     try {
       const response = await fetch(`${PORT}/photos`, {
         method: "GET",
@@ -105,7 +110,7 @@ export const ContextProvider = ({ children }: IContextProvider) => {
       const data: Ifotos[] = await response.json();
       setFotos(data || []);
     } catch (error) {
-      setError("Ocurrió un error al obtener las fotos");
+      setGlobalError("Ocurrió un error al obtener las fotos");
       throw new Error("Error al obtener las fotos", { cause: error });
     } finally {
       setLoading(false);
@@ -114,6 +119,7 @@ export const ContextProvider = ({ children }: IContextProvider) => {
 
   const getActiveFotos = async (login:boolean)=>{
     if (!login) return;
+        setLoading(true);
     try {
       const response = await fetch (`${PORT}/photos/active`,{
         method:'GET',
@@ -127,7 +133,7 @@ export const ContextProvider = ({ children }: IContextProvider) => {
       
       setActiveFotos(data || [])
     } catch (error) {
-      setError("Ocurrio un error al obtener las fotos activas")
+      setGlobalError("Ocurrio un error al obtener las fotos activas")
       throw new Error("Error al obtener las fotos activas", {cause:error})
     } finally{
       setLoading(false)
@@ -136,6 +142,7 @@ export const ContextProvider = ({ children }: IContextProvider) => {
   
   const getInactiveFotos = async (login:boolean)=>{
     if(!login) return
+        setLoading(true);
     try {
       const response = await fetch(`${PORT}/photos/inactive`,{
         method:'GET',
@@ -149,7 +156,7 @@ export const ContextProvider = ({ children }: IContextProvider) => {
       
       setInactiveFotos(data || [])
     } catch (error) {
-      setError("Ocurrio un error al obtener las fotos activas")
+      setGlobalError("Ocurrio un error al obtener las fotos activas")
       throw new Error("Error al obtener las fotos activas", {cause:error})
     }finally{
       setLoading(false)
@@ -206,7 +213,9 @@ export const ContextProvider = ({ children }: IContextProvider) => {
     category,
     setCategory,
     loading,
-    error,
+    setLoading,
+    globalError,
+    setGlobalError,
     setSelectedCategory,
     selectedCategory,
     categoryPage,
@@ -218,9 +227,17 @@ export const ContextProvider = ({ children }: IContextProvider) => {
     inactiveFotos,
     setInactiveFotos,
     getActiveFotos,
-    getInactiveFotos
+    getInactiveFotos,
+    getCategory
   };
 
 
-  return <Context.Provider value={value}>{children}</Context.Provider>;
+  return <Context.Provider value={value}>
+    {loading && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80">
+        <Loader />
+      </div>
+    )}
+    {children}
+    </Context.Provider>;
 };

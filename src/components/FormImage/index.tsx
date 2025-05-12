@@ -11,14 +11,21 @@ import Image from "next/image";
 import {ImagePreview} from "../MemoPreview";
 import {ConfirmModal} from "../ConfirmModal";
 
-export interface IformImage{
-    onSubmit: (formData: FormData) => Promise<void>;
-    defaultValue?: Ifotos;
-    mode: "edit" | "create";  
+export interface IformImage {
+  onSubmit: (
+    formData: FormData,
+    login: boolean
+  ) => Promise<void>;
+  defaultValue?: Ifotos;
+  mode: "edit" | "create";
+      numericId?: number
+
 }
 
-export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
-  const { setCategory } = useContext(Context);
+
+
+export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
+  const { setCategory, login } = useContext(Context);
   const [error, setError] = useState<IformErrors>({});
   const [selectCategory, setSelectCategory] = useState<boolean>(true);
   const [image, setImage] = useState<File | null>(null);
@@ -28,6 +35,7 @@ export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
 
   const MAX_HISTORY_LENGTH = 300;
   const pathName = usePathname();
+
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -221,8 +229,7 @@ export function FormImage ({ onSubmit, defaultValue, mode }: IformImage) {
     event.preventDefault();
     if (!pendingFormData) return;
     try {
-
-      await onSubmit(pendingFormData);
+      await onSubmit(pendingFormData, login);
 
      if (formImg.category?.id === 0) {
        // Usamos el valor actual del estado `categories` dentro de la función de actualización

@@ -6,6 +6,7 @@ export interface IselectCategoryProps {
   onChange: (selectedCategory: ICategory | null) => void;
   style?: React.CSSProperties;
   value?: string | null;
+  onRequestDeleteCategory?: (  categoryId: number) => void;
 }
 
 export const SelectCategory: React.FC<IselectCategoryProps> = ({

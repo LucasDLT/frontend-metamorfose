@@ -4,6 +4,10 @@ import { validateForm } from "@/helpers/validate";
 import { Ierror } from "@/types/error.t";
 import { Iuser } from "@/types/user.t";
 import { toast } from "sonner";
+import { useContext } from "react";
+import { Context } from "@/context/context";
+
+
 interface IformRegisterProps {
   setToggle: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -17,6 +21,8 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
 
   const [errors, setErrors] = useState<Ierror>({});
 
+  const { setLoading } = useContext(Context);
+
 
   const PORT = process.env.NEXT_PUBLIC_API_URL;
 
@@ -29,7 +35,7 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    //aca tengo que hacer el post a futuro
+    setLoading(true);
     setErrors(validateForm(form));
 
     if (Object.keys(errors).length) {
@@ -81,6 +87,8 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
         alignItems: "center",
         justifyContent: "center",
       }})
+    }finally{
+      setLoading(false);
     }
   };
 
