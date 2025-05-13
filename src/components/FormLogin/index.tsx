@@ -3,10 +3,11 @@ import { useForm } from "react-hook-form";
 import { loginSchema } from "@/validation/loginSchema";
 import { Inputs } from "@/types/typeErrors";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Context } from "@/context/context";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { EyeOff, Eye } from "lucide-react";
 
 interface FormLoginProps {
   setToggle: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,13 +20,13 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
   } = useForm<Inputs>({ resolver: zodResolver(loginSchema) });
 
   const { setLogin, setLoading } = useContext(Context);
+  const [isOpenEyes, setIsOpenEyes] = useState(false);
   const router = useRouter();
   const PORT = process.env.NEXT_PUBLIC_API_URL;
   console.log(PORT);
   
 
   async function postForm(data: Inputs) {
-    setLoading(true);
     try {
       const response = await fetch(`${PORT}/login`, {
         method: "POST",
@@ -102,15 +103,25 @@ router.push("/")
         <p className="text-white text-xs my-2"> </p>
       )}
 
-      <label className="text-white text-xs " htmlFor="password">
-        PASSWORD *
-      </label>
-      <input
-        type="text"
-        id="password"
-        {...register("password")}
-        className="rounded text-black"
-      />
+      <label className="text-white text-xs" htmlFor="password">
+  PASSWORD *
+</label>
+<div className="relative">
+  <input
+    type={isOpenEyes ? "text" : "password"}
+    id="password"
+    {...register("password")}
+    className="rounded text-black pr-10 w-full"
+  />
+  <button
+    type="button"
+    onClick={() => setIsOpenEyes((prev) => !prev)}
+    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
+  >
+    {isOpenEyes ? <EyeOff size={18} /> : <Eye size={18} />}
+  </button>
+</div>
+
       {errors.password?.message ? (
         <p className="text-red-500 text-xs">{errors.password?.message}</p>
       ) : (
