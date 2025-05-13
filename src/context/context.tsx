@@ -236,10 +236,10 @@ export const ContextProvider = ({ children }: IContextProvider) => {
 
   return (
     <Context.Provider value={value}>
-      {<PortalWrapper >(
-        loading && (
+      {<PortalWrapper >
+        {loading && (
             <Loader />
-        )      )
+        )      }
       </PortalWrapper>}
       {children}
     </Context.Provider>
