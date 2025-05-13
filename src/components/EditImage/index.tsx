@@ -5,10 +5,19 @@ import { Context, Ifotos } from "@/context/context";
 import { FormImage } from "@/components/FormImage";
 import { useRouter } from "next/navigation";
 
-
-export const EditImage = ({ id }: { id: string })=> {
-const PORT = process.env.NEXT_PUBLIC_API_URL;
-  const { login, setFotos, setActiveFotos, setInactiveFotos, setLoading, setGlobalError, getActiveFotos, getInactiveFotos, getCategory } = useContext(Context);
+export const EditImage = ({ id }: { id: string }) => {
+  const PORT = process.env.NEXT_PUBLIC_API_URL;
+  const {
+    login,
+    setFotos,
+    setActiveFotos,
+    setInactiveFotos,
+    setLoading,
+    setGlobalError,
+    getActiveFotos,
+    getInactiveFotos,
+    getCategory,
+  } = useContext(Context);
   const [dataFetch, setDataFetch] = useState<Ifotos | null>(null);
 
   const router = useRouter();
@@ -18,15 +27,13 @@ const PORT = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
     if (!login || !numericId) return;
 
-    const fetchData = async ( login: boolean, numericId: number) => {
+    const fetchData = async (login: boolean, numericId: number) => {
       if (!login) return;
       setLoading(true);
-
       try {
         const response = await fetch(`${PORT}/photos/id/${numericId}`, {
           method: "GET",
           credentials: "include",
-          
         });
 
         if (!response.ok) throw new Error("Acceso denegado. Token inválido.");
@@ -45,14 +52,16 @@ const PORT = process.env.NEXT_PUBLIC_API_URL;
       }
     };
 
-    fetchData( login, numericId);
+    fetchData(login, numericId);
   }, [PORT, numericId, login]);
 
-  const handleEdit = async (formData: FormData,login: boolean, numericId?: number) => {
-    
+  const handleEdit = async (
+    formData: FormData,
+    login: boolean,
+    numericId?: number
+  ) => {
     if (!login || !numericId) return;
     numericId = Number(numericId);
-    setLoading(true);
     try {
       const response = await fetch(`${PORT}/photos/update/${numericId}`, {
         method: "PUT",
@@ -60,27 +69,25 @@ const PORT = process.env.NEXT_PUBLIC_API_URL;
         credentials: "include",
       });
 
-      if (!response.ok) throw new Error("Ocurrió un error al actualizar la imagen por que el id es: "+numericId);
-
+      if (!response.ok)
+        throw new Error(
+          "Ocurrió un error al actualizar la imagen por que el id es: " +
+            numericId
+        );
 
       const data = await response.json();
       const updatedFotos = data.photo as Ifotos[];
-      
+
       // Seteo general
       setFotos(updatedFotos);
-      
+
       // Separo activos e inactivos
-      setActiveFotos(updatedFotos.filter(foto => foto.active));
-      setInactiveFotos(updatedFotos.filter(foto => !foto.active));
-      
-
-
-          
+      setActiveFotos(updatedFotos.filter((foto) => foto.active));
+      setInactiveFotos(updatedFotos.filter((foto) => !foto.active));
     } catch (error) {
       console.error(error);
       setGlobalError(`${error}`);
-    }finally{
-      setLoading(false)
+    } finally {
       getActiveFotos(login);
       getInactiveFotos(login);
       getCategory(login);
@@ -88,16 +95,13 @@ const PORT = process.env.NEXT_PUBLIC_API_URL;
     }
   };
 
-
-
-  return dataFetch ? (
-    <FormImage
-  defaultValue={dataFetch}
-  mode="edit"
-  onSubmit={(formData, login) => handleEdit(formData, login, numericId)}
-/>
-
-  ) : (
-    <div>No se encontraron datos</div>
+  return (
+    dataFetch && (
+      <FormImage
+        defaultValue={dataFetch}
+        mode="edit"
+        onSubmit={(formData, login) => handleEdit(formData, login, numericId)}
+      />
+    )
   );
-}
+};

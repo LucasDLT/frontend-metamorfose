@@ -25,7 +25,7 @@ export interface IformImage {
 
 
 export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
-  const { setCategory, login } = useContext(Context);
+  const { setCategory, login, setLoading } = useContext(Context);
   const [error, setError] = useState<IformErrors>({});
   const [selectCategory, setSelectCategory] = useState<boolean>(true);
   const [image, setImage] = useState<File | null>(null);
@@ -228,6 +228,7 @@ export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
   const handleConfirmSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!pendingFormData) return;
+    setLoading(true);
     try {
       await onSubmit(pendingFormData, login);
 
@@ -276,6 +277,7 @@ export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
      toast.error("Error al cargar la imagen", { duration: 5000 });
      throw new Error("error en el post de imagenes" + error);
    }finally{
+     setLoading(false);
      setModalIsOpen(false);
      setPendingFormData(null);
      if (fileInputRef.current) {
@@ -309,7 +311,7 @@ export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
     <>
     <form
       onSubmit={handleFile}
-      className="absolute top-16 right-[-9rem] left-[9rem] flex flex-row rounded font-afacad items-center justify-between z-50"
+      className="absolute top-16 right-[-9rem] left-[9rem] flex flex-row rounded font-afacad items-center justify-between z-30"
       method="POST"
     >
       {/*bloque para la imagen */}

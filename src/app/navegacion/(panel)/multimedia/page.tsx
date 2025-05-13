@@ -43,6 +43,7 @@ export default function Multimedia() {
   const [updateModalIsOpen, setUpdateModalIsOpen] = useState<boolean>(false);
   const [categoryIdToDelete, setCategoryIdToDelete, ] = useState<number| null>(null);
   const [openModalDeleteCategory, setOpenModalDeleteCategory] = useState<boolean>(false);
+  const [inactiveInCategory, setInactiveInCategory] = useState<boolean>(false);
   const [categoryUpdateData, setCategoryUpdateData] = useState<{
     id: number;
     name: string;
@@ -433,7 +434,11 @@ if (mouseY < rect.top + threshold) {
 //funcion para el mapeo de estados de las fotos
 const getFotosToDisplay = () => {
   if (categoryPage && selectedCategory) {
-    return localFoto;
+    if (inactiveInCategory) {
+       const inactiveFotosInCategory = localFoto.filter((foto: Ifotos) => foto.active === false);
+       return inactiveFotosInCategory;
+    }
+     return localFoto.filter((foto: Ifotos) => foto.active === true);
   }
 
   if (filterType === "active") {
@@ -449,9 +454,7 @@ const getFotosToDisplay = () => {
 
 
   return (
-    <div className="absolute top-16 right-[-9rem] left-[9rem] z-50"
-
-    >
+    <div className="absolute top-12 right-[-9rem] left-[9rem] z-50">
       {categoryPage ? (
         <CustomSelectCategory
           style={{
@@ -473,13 +476,13 @@ const getFotosToDisplay = () => {
       />
       }
       {categoryPage && selectedCategory && (
-        <div className="flex items-center text-white tracking-wide absolute top-[-33px]">
+        <div className=" flex items-center text-white tracking-wide absolute top-[-33px] gap-2">
           <label htmlFor="categoryName">Fotos en categoría: </label>
 
           <input
             id="categoryName"
             type="text"
-            className="text-white bg-transparent outline-none uppercase"
+            className="text-white text-center bg-transparent outline-none uppercase border border-gray-400 rounded w-[150px] backdrop-blur-sm"
             value={editedName}
             onChange={(e) => setEditedName(e.target.value)}
           />
@@ -492,6 +495,14 @@ const getFotosToDisplay = () => {
           >
             <PencilLine className="w-5 h-5" />
           </button>
+
+
+          <button
+            onClick={() => setInactiveInCategory(!inactiveInCategory)}
+            className="backdrop-blur-sm border border-gray-400 hover:border-gray-500 transition duration-300 ease-in-out rounded w-[150px] "
+          >
+           {inactiveInCategory ? "Mostrar Activas" : "Mostrar Inactivas"}
+            </button>
         </div>
       )}
 
@@ -501,15 +512,14 @@ const getFotosToDisplay = () => {
           options={{ scrollbars: { autoHide: "scroll" } }}
           style={{
             maxHeight: "80vh",
-            height: "76vh",
+            height: "74vh",
             overflowY: "auto",
-            transition: 'duration 300ms ease in-out '
+            transition: 'duration 300ms ease in-out'
           }}
         >
-          <div 
-          className="grid grid-cols-3 font-afacad  rounded h-full ">
-           
-                {getFotosToDisplay().map((foto) => (
+          <div className="grid grid-cols-3 font-afacad  rounded h-full">
+                {getFotosToDisplay().length === 0 ?( <div className="text-white text-center font-afacad flex items-center justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">No hay fotos en esta seccion</div>) 
+                :getFotosToDisplay().map((foto) => (
                   <Card
                   key={foto.id}
                   id={foto.id}
@@ -522,11 +532,10 @@ const getFotosToDisplay = () => {
                   handleDelete={() => confirmDelete(foto.id as number)}
                   handleUpdate={() => handleUpdate(foto.id as number)}
                   handleModal={() => toggleModal(foto as Ifotos)}
-                  
-                  onDragOver={handleDragOver}
-                  onDrop={handleDrop }
-                  onDragStart={handleDragStart}  
-                  onDragEnd={handleDragEnd}      
+                  onDragOver={filterType === "all" ? undefined : handleDragOver}
+                  onDrop={filterType === "all" ? undefined : handleDrop}
+                  onDragStart={filterType === "all" ? undefined : handleDragStart}
+                  onDragEnd={filterType === "all" ? undefined : handleDragEnd}     
                   />
                 ))}
             <ConfirmModal
@@ -536,16 +545,13 @@ const getFotosToDisplay = () => {
               title={"Eliminar"}
               message={"Estas seguro de eliminar esta categoría?"}
             />
- 
-
-            <ConfirmModal
+             <ConfirmModal
               isOpen={modalIsOpen}
               onClose={() => setModalIsOpen(false)}
               onConfirm={handleConfirmDelete}
               title={"Eliminar"}
               message={"Estas seguro de eliminar esta foto?"}
             />
-
             <ConfirmModal
               isOpen={updateModalIsOpen}
               onClose={() => setUpdateModalIsOpen(false)}

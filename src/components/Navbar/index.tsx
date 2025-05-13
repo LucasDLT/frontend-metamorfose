@@ -16,16 +16,16 @@ export default function Navbar() {
 
       {login === false && (
         <div className=" transform hover:translate-x-[-10%] transition duration-500 ease-in-out">
-          <Link href={"/forms"}>FORMULARIOS</Link>
+          <Link href={"/forms"}>Ingreso</Link>
         </div>
       )}
       <div className="transform hover:translate-x-[-10%] transition duration-500 ease-in-out">
-        <Link href={"/"}>INICIO</Link>
+        <Link href={"/"}>Inicio</Link>
       </div>
       {login && (
           // aca utilice template string para meter en la clase una condicion 
           <div className={`trasnform hover:translate-x-[-10%] transition duration-500 ease-in-out ${path ==="/" ? "animate-pulse":""}`}>
-          <Link href={"/navegacion"}>PANEL</Link>
+          <Link href={"/navegacion"}>Panel</Link>
         </div>
       
       )}
