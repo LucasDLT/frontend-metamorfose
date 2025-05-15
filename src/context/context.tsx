@@ -177,11 +177,30 @@ export const ContextProvider = ({ children }: IContextProvider) => {
         if (res.ok) {
           setLogin(true);
           document.cookie = "isLogin=true; path=/; SameSite=Lax";
-        } else {
-          setLogin(false);
-          document.cookie =
-            "isLogin=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        }
+        } else if (res.status === 401) {
+          const refreshResponse = await fetch(`${PORT}/refresh-token`, {
+            method: "POST",
+            credentials: "include",
+          });
+          if (refreshResponse.ok) {
+            const retryResponse = await fetch(`${PORT}/session`, {
+              method: "GET",
+              credentials: "include",
+            });
+            if (retryResponse.ok) {
+              setLogin(true);
+              document.cookie = "isLogin=true; path=/; SameSite=Lax";
+            }else {
+              setLogin(false);
+              document.cookie =
+                "isLogin=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            }
+          }else {
+            setLogin(false);
+            document.cookie =
+              "isLogin=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+          }
+        } 
       } catch (error) {
         console.error("Error al verificar la sesión:", error);
         setLogin(false);
@@ -236,11 +255,7 @@ export const ContextProvider = ({ children }: IContextProvider) => {
 
   return (
     <Context.Provider value={value}>
-      {<PortalWrapper >
-        {loading && (
-            <Loader />
-        )      }
-      </PortalWrapper>}
+      {<PortalWrapper>{loading && <Loader />}</PortalWrapper>}
       {children}
     </Context.Provider>
   );
