@@ -29,6 +29,13 @@ export const validateForm = (form: Iuser): Ierror => {
     errors.confirmPassword = "Las contraseñas no coinciden";
   }
 
+  if (form.confirmPassword && !passwordRegex.test(form.confirmPassword)) {
+    errors.confirmPassword = "La contraseña debe tener al menos 8 caracteres, incluir al menos una letra y un número";
+  }
+
+  if (form.password !== form.confirmPassword) {
+    errors.confirmPassword = "Las contraseñas no coinciden";
+  }
   return errors;
 };
 

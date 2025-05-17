@@ -4,8 +4,7 @@ import { validateForm } from "@/helpers/validate";
 import { Ierror } from "@/types/error.t";
 import { Iuser } from "@/types/user.t";
 import { toast } from "sonner";
-import { useContext } from "react";
-import { Context } from "@/context/context";
+
 
 
 interface IformRegisterProps {
@@ -21,7 +20,6 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
 
   const [errors, setErrors] = useState<Ierror>({});
 
-  const { setLoading } = useContext(Context);
 
 
   const PORT = process.env.NEXT_PUBLIC_API_URL;
@@ -33,9 +31,10 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
     });
   }
 
+
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setLoading(true);
     setErrors(validateForm(form));
 
     if (Object.keys(errors).length) {
@@ -54,12 +53,12 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
         body: JSON.stringify(formData),
       });
       if (!response.ok) {
-        const errorResponse = await response.text();
-        console.error("Error en la solicitud:", errorResponse);
-        throw new Error("Hubo un error en la solicitud");
+        const errorResponse = await response.json();
+        const errorMessage = errorResponse.message;
+        console.error("Error en la solicitud:", errorMessage);
+        throw new Error( errorMessage);
       }
-      const data = await response.json();
-      toast.success("Registro exitoso, Bienvenida",{ style: {
+      toast.success(`Registro exitoso` ,{ style: {
         borderRadius: "10px",
         background: "#333",
         color: "#fff",
@@ -72,24 +71,25 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
         justifyContent: "center",
       }});
       setToggle(false);
-      console.log("registro: ", data);
-    } catch (error) {
-      console.error("Error al registrarse: ", error);
-      toast.error("Error al registrarse", { style: {
-        borderRadius: "10px",
-        background: "#333",
-        color: "#fff",
-        height: "25px",
-        width: "200px",
-        backgroundColor: "#6666662f",
-        fontFamily:" afacad",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }})
-    }finally{
-      setLoading(false);
-    }
+    }  catch (error: unknown) {
+   if (error instanceof Error) {
+     toast.error(`${error.message}`, {
+       style: {
+         borderRadius: "10px",
+         background: "#333",
+         color: "#fff",
+         height: "25px",
+         width: "200px",
+         backgroundColor: "#6666662f",
+         fontFamily: "afacad",
+         display: "flex",
+         alignItems: "center",
+         justifyContent: "center",
+       },
+     });
+   }
+}
+
   };
 
   return (
@@ -112,7 +112,7 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
       />
       {errors.email ? <p className="text-red-500 text-xs">{errors.email}</p> : <p className="text-white text-xs my-2"></p>}
 
-      <label className="text-xs">CONTRASEÑA *</label>
+      <label className="text-xs mt-4">CONTRASEÑA *</label>
       <input
         type="text"
         value={form.password}
@@ -123,7 +123,7 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
       />
       {errors.password ? <p className="text-red-500 text-xs">{errors.password}</p> : <p className="text-white text-xs my-2"></p>}
 
-      <label className="text-xs">CONFIRMAR *</label>
+      <label className="text-xs mt-4">CONFIRMAR *</label>
       <input
         type="text"
         value={form.confirmPassword}
@@ -132,8 +132,8 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
         onChange={handleChange}
         className="rounded text-black"
       />
-      {errors.password ? (
-        <p className="text-red-500 text-xs">{errors.password}</p>
+      {errors.confirmPassword ? (
+        <p className="text-red-500 text-xs">{errors.confirmPassword}</p>
       ) : (
         <p className="text-white text-xs my-2"></p>
       )}
@@ -145,8 +145,10 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
         ¿Ya tenes cuenta? directamente logueate 
         <button type="button" className="text-blue-500 m-1" onClick={() => setToggle(false)}>aqui</button>
       </h3>
-      <h4 className="text-xs text-white text-center">
-        campos marcados con (*) son obligatorios
+      <h4 className="text-xs text-white text-justify ">
+        campos marcados con (*) son obligatorios.
+        <br />
+        La contraseña debe tener al menos 8 caracteres, incluir al menos una letra y un número
       </h4>
     </form>
   );
