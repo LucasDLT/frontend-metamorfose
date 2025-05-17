@@ -11,6 +11,7 @@ interface CardProps extends Ifotos {
   onDragOver?: (e: React.DragEvent<HTMLDivElement>) => void;
   handleCategoryOrderChange?: (fotoId: number, newOrder: number) => void;  
   onDragEnd?: (e: React.DragEvent<HTMLDivElement>) => void;
+  className?: string
 }
 
 export const Card: React.FC<CardProps> = (fotos: CardProps) => {
@@ -21,7 +22,7 @@ export const Card: React.FC<CardProps> = (fotos: CardProps) => {
     category,
     createdAt,
     active,
- 
+    className = "",
     handleDelete,
     handleUpdate,
     handleModal,
@@ -55,8 +56,9 @@ export const Card: React.FC<CardProps> = (fotos: CardProps) => {
      onDragOver={ onDragOver}
      onDrop={ (e) => onDrop && onDrop(e, fotos.id!)}
      onDragEnd={onDragEnd}
-    
-     className="aspect-[1.446]  m-1 flex flex-col items-center justify-center rounded font-sans relative z-0 cursor-grab transition-all duration-200 ease-in-out ">
+      className={`${className} aspect-[1.446] m-1 flex flex-col items-center justify-center rounded font-sans relative z-0 cursor-grab transition-all duration-200 ease-in-out`}
+
+      >
         <div className="flex flex-row justify-between  text-xs w-full bg-black bg-opacity-80 z-10 font-afacad absolute top-0  ">
           <h2 className="text-gray-300 hover:text-gray-500 uppercase flex alingn-center transition duration-500 ease-in-out">
             {category?.name} 

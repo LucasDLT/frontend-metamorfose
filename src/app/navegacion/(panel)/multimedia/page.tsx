@@ -6,7 +6,7 @@ import { Card } from "@/components/Card";
 import { Modal } from "@/components/Modal";
 import Image from "next/image";
 import { ConfirmModal } from "@/components/ConfirmModal";
-import { PencilLine } from "lucide-react";
+import { ArrowDownUpIcon } from "lucide-react";
 import { CustomSelectCategory } from "@/components/CustomSelectCategory";
 import { toast } from "sonner";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
@@ -453,10 +453,13 @@ const getFotosToDisplay = () => {
 };
 
 
+const delays = ["delay-300", "delay-500", "delay-700", "delay-1000"];
+
   return (
     <div className="absolute top-12 right-[-9rem] left-[9rem] z-50">
       {categoryPage ? (
         <CustomSelectCategory
+        clasName="animate-fade-right"
           style={{
             color: "white",
             backgroundColor: "transparent",
@@ -476,13 +479,14 @@ const getFotosToDisplay = () => {
       />
       }
       {categoryPage && selectedCategory && (
-        <div className=" flex items-center text-white tracking-wide absolute top-[-33px] gap-2">
-          <label htmlFor="categoryName">Fotos en categoría: </label>
+        <div className=" flex items-center text-white tracking-wide absolute top-[-33px] gap-2 text-sm">
+          <label htmlFor="categoryName" className="text-sm">Fotos en categoría: </label>
 
           <input
+            
             id="categoryName"
             type="text"
-            className="text-white text-center bg-transparent outline-none uppercase border border-gray-400 rounded w-[150px] backdrop-blur-sm"
+            className="text-white text-center bg-transparent outline-none uppercase border border-gray-400 rounded w-[150px] backdrop-blur-sm animate-pulse"
             value={editedName}
             onChange={(e) => setEditedName(e.target.value)}
           />
@@ -491,17 +495,21 @@ const getFotosToDisplay = () => {
             onClick={() =>
               confirmUpdateCategory(selectedCategory?.id as number, editedName)
             }
-            className="hover:text-red-700 transition duration-300 ease-in-out"
+            
+            className="hover:text-gray-400 transition duration-300 ease-in-out text-white text-center bg-transparent outline-none uppercase flex items-center gap-3 justify-center border border-gray-400 rounded w-[200px] backdrop-blur-sm"
           >
-            <PencilLine className="w-5 h-5" />
+CAMBIAR NOMBRE  
+<div>
+          <ArrowDownUpIcon data-tip="Guardar" className="w-5 h-5" />
+  </div>          
           </button>
 
 
           <button
             onClick={() => setInactiveInCategory(!inactiveInCategory)}
-            className="backdrop-blur-sm border border-gray-400 hover:border-gray-500 transition duration-300 ease-in-out rounded w-[150px] "
+            className="backdrop-blur-sm border border-gray-400 hover:border-gray-500 transition duration-300 ease-in-out rounded w-[150px] animate-pulse "
           >
-           {inactiveInCategory ? "Mostrar Activas" : "Mostrar Inactivas"}
+           {inactiveInCategory ? "SUBIDAS" : " BORRADORES"}
             </button>
         </div>
       )}
@@ -518,8 +526,13 @@ const getFotosToDisplay = () => {
           }}
         >
           <div className="grid grid-cols-3 font-afacad  rounded h-full">
-                {getFotosToDisplay().length === 0 ?( <div className="text-white text-center font-afacad flex items-center justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">No hay fotos en esta seccion</div>) 
-                :getFotosToDisplay().map((foto) => (
+                {getFotosToDisplay().length === 0 ?( 
+                  <div className="text-white/70 font-bold tracking-wider text-center font-afacad text-xl flex items-center justify-center absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-fade-in animate-pulse">No hay fotos en esta seccion</div>) 
+                :getFotosToDisplay().map((foto, index) => (
+                   <div
+        key={foto.id}
+        className={`animate-fade-in ${delays[index % delays.length]}`}
+      >
                   <Card
                   key={foto.id}
                   id={foto.id}
@@ -532,11 +545,12 @@ const getFotosToDisplay = () => {
                   handleDelete={() => confirmDelete(foto.id as number)}
                   handleUpdate={() => handleUpdate(foto.id as number)}
                   handleModal={() => toggleModal(foto as Ifotos)}
-                  onDragOver={filterType === "all" ? undefined : handleDragOver}
-                  onDrop={filterType === "all" ? undefined : handleDrop}
-                  onDragStart={filterType === "all" ? undefined : handleDragStart}
-                  onDragEnd={filterType === "all" ? undefined : handleDragEnd}     
+                  onDragOver={filterType === "all" && !categoryPage ? undefined : handleDragOver}
+                  onDrop={filterType === "all" && !categoryPage ? undefined : handleDrop}
+                  onDragStart={filterType === "all" && !categoryPage ? undefined : handleDragStart}
+                  onDragEnd={filterType === "all" && !categoryPage ? undefined : handleDragEnd}     
                   />
+                  </div>
                 ))}
             <ConfirmModal
               isOpen={openModalDeleteCategory}
@@ -572,7 +586,12 @@ const getFotosToDisplay = () => {
               </div>
             </Modal>
         </OverlayScrollbarsComponent>
-      ) : null}
+      ) : 
+      (
+        <div className="flex justify-center items-center h-full">
+          <p className="text-white/70 font-bold tracking-wider text-center font-afacad text-xl animate-fade-in animate-pulse">Ocurrio un error inesperado en la base de datos, contactate con el desarrollador</p>
+        </div>
+      )}
     </div>
   );
 }
