@@ -2,6 +2,7 @@ export interface IsActiveFotoBtnProps {
   onClickActive: () => void;
   onClickInactive: () => void;
   onClickAll: () => void;
+  
 }
 
 export const IsActiveFotoBtn: React.FC<IsActiveFotoBtnProps> = ({
@@ -11,6 +12,7 @@ export const IsActiveFotoBtn: React.FC<IsActiveFotoBtnProps> = ({
 }) => {
   return (
     <ul
+      className="animate-move-right"
       style={{
         color: "white",
         backgroundColor: "transparent",
@@ -26,15 +28,14 @@ export const IsActiveFotoBtn: React.FC<IsActiveFotoBtnProps> = ({
         gap: "2rem",
       }}
     >
-      <button className=" text-white text-[13px]" onClick={onClickAll}>
+      <button className="transform hover:translate-x-[10%] transition duration-300 ease-in-out text-white text-[13px]" onClick={onClickAll}>
         Todas
       </button>
-
-      <button className=" text-white text-[13px]" onClick={onClickActive}>
-        Activas
+      <button className="transform hover:translate-x-[10%] transition duration-300 ease-in-out text-white text-[13px]" onClick={onClickActive}>
+        subidas
       </button>
-      <button className=" text-white text-[13px]" onClick={onClickInactive}>
-        Inactivas
+      <button className="transform hover:translate-x-[10%] transition duration-300 ease-in-out text-white text-[13px]" onClick={onClickInactive}>
+        borradores
       </button>
     </ul>
   );

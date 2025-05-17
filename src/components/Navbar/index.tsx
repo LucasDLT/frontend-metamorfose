@@ -12,7 +12,7 @@ export default function Navbar() {
 
 
   return (
-    <nav className="w-[7%] h-60 flex flex-col justify-center items-center text-xs text-white text-center gap-4 fixed z-50 top-[16%] right-[0%] tracking-wide font-afacad  ">
+    <nav className="w-[7%] h-60 flex flex-col justify-center items-center text-sm text-white text-center gap-4 fixed z-50 top-[16%] right-[0%] tracking-wide font-afacad">
 
       {login === false && (
         <div className=" transform hover:translate-x-[-10%] transition duration-500 ease-in-out">

@@ -41,7 +41,7 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
 
 
   return (
-    <div className=" ml-[-36px] w-[8.5rem]" style={style}>
+    <div className=" ml-[-36px] w-[8.5rem] animate-move-right" style={style}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -49,7 +49,7 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
       >
         <span>{selectedCategoryName || titleSelect}</span>
         <svg
-          className={`w-4 h-4 transform transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          className={`w-4 h-4 transform transition-transform duration-400 ease-in-out ${isOpen ? "rotate-180" : ""}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -60,8 +60,8 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
 
       {/* Lista de opciones */}
       <div
-        className={`absolute bg-black/60 w-full mt-1 rounded shadow z-10 max-h-60 overflow-y-auto transition-all duration-200 origin-top transform
-          ${isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}
+        className={`absolute bg-black/60 w-full mt-1 rounded shadow z-10 max-h-60 overflow-y-auto transition-all duration-400 origin-top transform
+          ${isOpen ? "opacity-100 scale-100 transition duration-300 ease-in-out" : "opacity-0 scale-95 pointer-events-none"}
         `}
       >
         <ul className="py-1">
