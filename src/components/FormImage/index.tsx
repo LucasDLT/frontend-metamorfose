@@ -311,13 +311,14 @@ export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
     <>
     <form
       onSubmit={handleFile}
-      className="absolute top-16 right-[-9rem] left-[9rem] flex flex-row rounded font-afacad items-center justify-between z-30"
+      className="grid grid-cols-1 xl:grid-cols-2 xl:gap-[5rem] lg:grid-cols-2 lg:gap-[1px] md:grid-cols-2 md:grid-cols-2 
+      sm:grid-cols-2 absolute overflow-y-auto max-h-[70vh] top-16 flex flex-row rounded font-afacad items-center justify-center z-30  "
       method="POST"
     >
       {/*bloque para la imagen */}
-      <div className="grid place-items-center bg-gradient-to-t from-black to-black/10 p-2 rounded">
+      <div className="grid place-items-center bg-gradient-to-t from-black to-black/10 p-2 rounded animate-move-right">
         <h1 className="text-3xl text-center font-bold text-white drop-shadow-[2px_2px_2px_black]">
-          CARGA DE IMAGENES
+          CARGA DE IMAGEN
         </h1>
         <label 
         htmlFor="url"          
@@ -364,7 +365,7 @@ export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
             <Image
               src={formImg.url}
               alt="previewEdit"
-              className="aspect-[1/1] object-cover rounded w-full h-full mt-1 pb-3 border-opacity-90 shadow-[0_0_20px_5px_rgba(0,0,0,0.8)] hover:shadow-none transition duration-300 ease-in-out"
+              className="aspect-[1/1] object-cover rounded w-full h-full mt-1 pb-3 border-opacity-90 shadow-[0_0_20px_5px_rgba(0,0,0,0.8)] hover:shadow-none transition duration-300 ease-in-out animate-fade-in"
               width={500}
               height={500}
             />
@@ -381,7 +382,7 @@ export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
         </div>
       </div>
       {/*bloque para los datos adicionales */}
-      <div className="flex flex-col items-center h-[480px] w-[300px]">
+      <div className="flex flex-col items-center h-[480px] w-[300px] animate-fade-in">
         <div className="flex flex-col bg-gradient-to-t from-black to-black/8 w-[250px] text-center rounded-t-lg
  p-2.5">
           <label htmlFor="title">TITULO</label>
@@ -530,37 +531,7 @@ export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
           )}
         </div>
       </div>
-      {/* bloque para ver el preview*/}
-      <div
-        className="
-     rounded flex flex-col gap-2 w-[300px] h-[480px] justify-start bg-gradient-to-t from-black to-black/10 overflow-hidden p-2
-  "
-      >
 
-        <p className="text-3xl text-center font-bold text-white drop-shadow-[2px_2px_2px_black] mb-2">
-          VISTA PREVIA
-        </p>
-
-        <div className="text-white text-sm ml-4">
-          <p className="mb-1">
-            <strong>TÍTULO:</strong> {formImg.title}
-          </p>
-          <p className="mb-1">
-            <strong>CATEGORÍA:</strong>
-            {formImg.category?.name.toUpperCase() || "no seleccionada"}
-          </p>
-          <p className="mb-1">
-            <strong>FECHA:</strong> {formImg.createdAt}
-          </p>
-
-          <div className="mt-2">
-            <strong>HISTORIA:</strong>
-            <div className="max-h-[180px] overflow-y-auto overflow-x-hidden p-1 mt-1 rounded text-sm text-white whitespace-pre-wrap break-words">
-              <p className="whitespace-pre-wrap">{formImg.history}</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </form>
       <ConfirmModal isOpen={(modalIsOpen)} onClose={() => setModalIsOpen(false)} onConfirm={handleConfirmSubmit} title={confirmTitle} message={confirmMessage} />
       </>

@@ -52,7 +52,7 @@ export const LogoutBtn = () => {
     login === true && (
       <div className="relative">
         <button onClick={handleLogout}>
-          <LogOut className=" h7 w-4 hover:text-gray-500 hover:scale-110 transition duration-300 ease-in-out absolute top-[-65px] right-11" />
+          <LogOut className=" h7 w-4 hover:text-gray-500 hover:scale-110 transition duration-300 ease-in-out" />
         </button>
       </div>
     )
