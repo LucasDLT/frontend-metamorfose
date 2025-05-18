@@ -11,6 +11,7 @@ import { CustomSelectCategory } from "@/components/CustomSelectCategory";
 import { toast } from "sonner";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import { IsActiveFotoBtn } from "@/components/IsAtiveFotoBtn";
+import { Loader } from "@/components/Loader";
 
 
 export default function Multimedia() {
@@ -456,7 +457,7 @@ const getFotosToDisplay = () => {
 const delays = ["delay-300", "delay-500", "delay-700", "delay-1000"];
 
   return (
-    <div className="absolute top-12 right-[-9rem] left-[9rem] z-50">
+    <div className="w-[330px] flex justify-center items-center sm:w-[455px] justify-center md:w-[600px] lg:w-[850px] xl:w-[1110px] 2xl:w-[1300px] absolute top-16 z-50 flex justify-center items-center">
       {categoryPage ? (
         <CustomSelectCategory
         clasName="animate-fade-right"
@@ -465,28 +466,29 @@ const delays = ["delay-300", "delay-500", "delay-700", "delay-1000"];
             backgroundColor: "transparent",
             outline: "none",
             letterSpacing: "0.5px",
-            position: "absolute",
-            top: "0px",
-            left: "-103px",
           }}
           onChange={handleCategoryChange}
           onRequestDeleteCategory={handleRequestDelete}
         />
-      ): <IsActiveFotoBtn
-      onClickActive={() => setFilterType("active")}
-      onClickInactive={() => setFilterType("inactive")}
-      onClickAll={() => setFilterType("all")}
-      />
+      ):
+      <div>
+
+        <IsActiveFotoBtn
+       onClickActive={() => setFilterType("active")}
+       onClickInactive={() => setFilterType("inactive")}
+       onClickAll={() => setFilterType("all")}
+       />
+      </div>
       }
       {categoryPage && selectedCategory && (
-        <div className=" flex items-center text-white tracking-wide absolute top-[-33px] gap-2 text-sm">
+        <div className=" flex items-center justify-end text-white tracking-wide absolute top-[-24px] gap-2 text-[10px]">
           <label htmlFor="categoryName" className="text-sm">Fotos en categoría: </label>
 
           <input
             
             id="categoryName"
             type="text"
-            className="text-white text-center bg-transparent outline-none uppercase border border-gray-400 rounded w-[150px] backdrop-blur-sm animate-pulse"
+            className="  text-white text-center bg-transparent outline-none uppercase border border-gray-400 rounded w-[150px] backdrop-blur-sm animate-pulse"
             value={editedName}
             onChange={(e) => setEditedName(e.target.value)}
           />
@@ -525,7 +527,7 @@ CAMBIAR NOMBRE
             transition: 'duration 300ms ease in-out'
           }}
         >
-          <div className="grid grid-cols-3 font-afacad  rounded h-full">
+<div className="grid grid-cols-1 gap-2 font-afacad rounded h-full justify-items-center items-center sm:w-full sm:grid-cols-2 md:w-full lg:w-full lg:grid-cols-3 xl:w-full lg:grid-cols-3 flex flex-wrap justify-center">
                 {getFotosToDisplay().length === 0 ?( 
                   <div className="text-white/70 font-bold tracking-wider text-center font-afacad text-xl flex items-center justify-center absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-fade-in animate-pulse">No hay fotos en esta seccion</div>) 
                 :getFotosToDisplay().map((foto, index) => (
@@ -575,9 +577,17 @@ CAMBIAR NOMBRE
             />
           </div>
             <Modal isOpen={isModalOpen} onClose={() => toggleModal(null)}>
-              <div className=" w-[45vw] h-[70vh]  flex justify-center items-center">
+              <div className=" 
+              xl:w-[40vw] xl:h-[auto]
+              lg:w-[48vw] lg:h-[auto]
+              md:w-[58w] md:h-[auto]
+              sm:w-[64vw] sm:h-[auto]
+              w-[79vw] h-[auto] bg-transparent
+              flex justify-center items-center animate-fade-in">
+
+            
                 <Image
-                  className="w-full h-full object-cover rounded-sm"
+                  className="bg-gray-100 w-full h-full object-cover rounded-sm"
                   src={imageUrl}
                   alt={title || "Imagen"}
                   width={4120}
@@ -588,8 +598,8 @@ CAMBIAR NOMBRE
         </OverlayScrollbarsComponent>
       ) : 
       (
-        <div className="flex justify-center items-center h-full">
-          <p className="text-white/70 font-bold tracking-wider text-center font-afacad text-xl animate-fade-in animate-pulse">Ocurrio un error inesperado en la base de datos, contactate con el desarrollador</p>
+        <div className="flex justify-center items-center">
+          <Loader />
         </div>
       )}
     </div>

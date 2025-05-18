@@ -11,7 +11,7 @@ export default function Forms() {
 
 
   return (
-    <main className="mt-16 font-afacad ">
+    <main className="mt-16 font-afacad">
       {!toggle ? (
         <FormLogin setToggle={setToggle} />
       ) : (

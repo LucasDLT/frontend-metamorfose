@@ -97,7 +97,7 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
       id="formRegister"
       onSubmit={handleSubmit}
       method="post"
-      className="grid justify-center mx-auto p-4 w-64 bg-gradient-to-t from-black/80 to-black/10 backdrop-blur-sm rounded-b z-50"
+      className="grid justify-center mx-auto p-4 w-64 bg-gradient-to-t from-black/80 to-black/10 backdrop-blur-sm rounded-b z-50 animate-fade-in"
     >
       <label className="text-white p-4 text-center">REGISTRATE</label>
 

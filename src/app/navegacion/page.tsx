@@ -1,8 +1,7 @@
 export default function Navegacion() {
   return (
-    <div className="flex justify-center absolute top-16 right-[-9rem] left-[9rem] animate-fade-in">
-      <h1 className="text-xl font-afacad animate-pulse flex justify-center items-center absolute top-32" >Podes seleccionar entre las opciones para navegar entre tus fotos, su edicion y su carga </h1>
+    
+      <h1 className="text-sm font-afacad animate-pulse flex justify-center items-center absolute top-32 animate-fade-in w-[20rem] text-center sm:w-[30rem] sm:text-lg" > selecciona las opciones para navegar entre tus fotos, su edicion y su carga </h1>
 
-    </div>
   );
 }

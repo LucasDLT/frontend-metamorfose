@@ -21,7 +21,7 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
   const isMultimediaDetail = path.startsWith("/multimedia/") && path !== "/multimedia";
 
   const titleSelect = isMultimediaPage
-    ? "Total de fotos"
+    ? "Categorias"
     : isMultimediaDetail
     ? "Selecciona una categoría"
     : "Categorías";
@@ -41,7 +41,21 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
 
 
   return (
-    <div className=" ml-[-36px] w-[8.5rem] animate-move-right" style={style}>
+    <div className="animate-fade-in absolute
+        top-[10px]
+        left-[-28%]
+        flex
+        flex-col
+        items-center
+        justify-center
+        gap-10
+        w-[5.5rem]
+        sm:left-[-22%] 
+        md:left-[-15%]
+        lg:left-[-11%]
+        xl:left-[-8%]
+        2xl:left-[-7%]" 
+        style={style}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -60,23 +74,16 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
 
       {/* Lista de opciones */}
       <div
-        className={`absolute bg-black/60 w-full mt-1 rounded shadow z-10 max-h-60 overflow-y-auto transition-all duration-400 origin-top transform
+        className={`absolute bg-black/60 w-full mt-32 rounded shadow z-10 max-h-60 overflow-y-auto transition-all duration-400 origin-top transform
           ${isOpen ? "opacity-100 scale-100 transition duration-300 ease-in-out" : "opacity-0 scale-95 pointer-events-none"}
         `}
       >
         <ul className="py-1">
-          <li
-            key="default"
-            className="px-4 py-2 text-white hover:text-gray-400 transition duration-300 ease-in-out cursor-pointer"
-            onClick={() => handleSelect("")}
-          >
-            {titleSelect}
-          </li>
-
+     
           {category.map((categoria: ICategory) => (
             <li
               key={categoria.id}
-              className="flex justify-between items-center px-4 py-2 text-white hover:text-gray-400 transition duration-300 ease-in-out cursor-pointer"
+              className="flex justify-between px-4 py-2 text-white text-[10px] hover:text-gray-400 transition duration-300 ease-in-out cursor-pointer"
               onClick={() => handleSelect(categoria.name)}
             >
               <span>{categoria.name.toUpperCase()}</span>
