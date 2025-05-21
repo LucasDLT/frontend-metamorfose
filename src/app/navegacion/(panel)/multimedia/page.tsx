@@ -481,14 +481,14 @@ const delays = ["delay-300", "delay-500", "delay-700", "delay-1000"];
       </div>
       }
       {categoryPage && selectedCategory && (
-        <div className=" flex items-center justify-end text-white tracking-wide absolute top-[-24px] gap-2 text-[10px]">
-          <label htmlFor="categoryName" className="text-sm">Fotos en categoría: </label>
+        <div className=" flex items-center justify-end text-white tracking-wide absolute top-[-26px] gap-1 lg:gap-2 xl:gap-3 text-[10px]">
+          <label htmlFor="categoryName" className="text-sm hidden md:block lg:block xl:block">Fotos en categoría: </label>
 
           <input
             
             id="categoryName"
             type="text"
-            className="  text-white text-center bg-transparent outline-none uppercase border border-gray-400 rounded w-[150px] backdrop-blur-sm animate-pulse"
+            className="text-white text-center bg-transparent outline-none uppercase border border-gray-400 rounded w-[130px] lg:w-[140px] xl:w-[150px]  backdrop-blur-sm animate-pulse"
             value={editedName}
             onChange={(e) => setEditedName(e.target.value)}
           />
@@ -498,7 +498,7 @@ const delays = ["delay-300", "delay-500", "delay-700", "delay-1000"];
               confirmUpdateCategory(selectedCategory?.id as number, editedName)
             }
             
-            className="hover:text-gray-400 transition duration-300 ease-in-out text-white text-center bg-transparent outline-none uppercase flex items-center gap-3 justify-center border border-gray-400 rounded w-[200px] backdrop-blur-sm"
+            className="hover:text-gray-400 transition duration-300 ease-in-out text-white text-center bg-transparent outline-none uppercase flex items-center gap-3 justify-center border border-gray-400 rounded w-[140px] lg:w-[150px] xl:w-[200px] backdrop-blur-sm"
           >
 CAMBIAR NOMBRE  
 <div>
@@ -509,7 +509,7 @@ CAMBIAR NOMBRE
 
           <button
             onClick={() => setInactiveInCategory(!inactiveInCategory)}
-            className="backdrop-blur-sm border border-gray-400 hover:border-gray-500 transition duration-300 ease-in-out rounded w-[150px] animate-pulse "
+            className="backdrop-blur-sm border border-gray-400 hover:border-gray-500 transition duration-300 ease-in-out rounded w-[130px] lg:w-[140px] xl:w-[150px]  animate-pulse "
           >
            {inactiveInCategory ? "SUBIDAS" : " BORRADORES"}
             </button>
