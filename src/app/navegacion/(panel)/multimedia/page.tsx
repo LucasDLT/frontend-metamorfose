@@ -434,14 +434,16 @@ if (mouseY < rect.top + threshold) {
 
 //funcion para el mapeo de estados de las fotos
 const getFotosToDisplay = () => {
-  if (categoryPage && selectedCategory) {
-    if (inactiveInCategory) {
-       const inactiveFotosInCategory = localFoto.filter((foto: Ifotos) => foto.active === false);
-       return inactiveFotosInCategory;
-    }
-     return localFoto.filter((foto: Ifotos) => foto.active === true);
-  }
+    if (categoryPage) {
+    if (!selectedCategory) return []; 
 
+    if (inactiveInCategory) {
+      const inactiveFotosInCategory = localFoto.filter((foto: Ifotos) => foto.active === false);
+      return inactiveFotosInCategory;
+    }
+
+    return localFoto.filter((foto: Ifotos) => foto.active === true);
+  }
   if (filterType === "active") {
     return activeFotos;
   }
