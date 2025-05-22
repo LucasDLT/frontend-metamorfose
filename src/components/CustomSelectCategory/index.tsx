@@ -56,10 +56,12 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
         xl:left-[-8%]
         2xl:left-[-7%]" 
         style={style}>
+          <div className="relative w-full">
+
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className=" text-white w-full p-2  flex justify-evenly items-center"
+        className=" text-white w-full p-2 flex justify-evenly items-center"
       >
         <span>{selectedCategoryName || titleSelect}</span>
         <svg
@@ -70,20 +72,20 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
-      </button>
+      </button> 
 
       {/* Lista de opciones */}
       <div
-        className={`absolute bg-black/60 w-full mt-32 rounded shadow z-10 max-h-60 overflow-y-auto transition-all duration-400 origin-top transform
+        className={`absolute bg-black/60 w-full   rounded shadow z-10 max-h-60 overflow-y-auto transition-all duration-400 origin-top transform
           ${isOpen ? "opacity-100 scale-100 transition duration-300 ease-in-out" : "opacity-0 scale-95 pointer-events-none"}
         `}
       >
-        <ul className="py-1">
+        <ul >
      
           {category.map((categoria: ICategory) => (
             <li
               key={categoria.id}
-              className="flex justify-between px-4 py-2 text-white text-[10px] hover:text-gray-400 transition duration-300 ease-in-out cursor-pointer"
+              className="flex justify-between items-center text-white text-[9px] hover:text-gray-400 transition duration-300 ease-in-out cursor-pointer mb-1 px-2"
               onClick={() => handleSelect(categoria.name)}
             >
               <span>{categoria.name.toUpperCase()}</span>
@@ -102,6 +104,8 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
           ))}
         </ul>
       </div>
+
+                </div>
     </div>
   );
 };
