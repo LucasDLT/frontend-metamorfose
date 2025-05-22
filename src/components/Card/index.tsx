@@ -54,8 +54,8 @@ export const Card: React.FC<CardProps> = (fotos: CardProps) => {
         className={`${className} aspect-[1.446] flex flex-col items-center justify-center rounded font-sans relative z-0 cursor-grab transition-all duration-200 ease-in-out`}
       >
         {loading && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 text-white text-xs font-afacad">
-            Cargando imagen...
+          <div className="absolute border inset-0 z-50 flex items-center justify-center bg-black/40 text-white text-xs font-afacad">
+            Cargando...
           </div>
         )}
 
