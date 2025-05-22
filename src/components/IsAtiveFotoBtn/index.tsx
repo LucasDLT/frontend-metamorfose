@@ -37,10 +37,10 @@ export const IsActiveFotoBtn: React.FC<IsActiveFotoBtnProps> = ({
       }}
     >
       <button className="transform hover:translate-x-[10%] transition duration-300 ease-in-out text-white text-[13px]" onClick={onClickAll}>
-        Todas
+        coleccion
       </button>
       <button className="transform hover:translate-x-[10%] transition duration-300 ease-in-out text-white text-[13px]" onClick={onClickActive}>
-        subidas
+        portfolio
       </button>
       <button className="transform hover:translate-x-[10%] transition duration-300 ease-in-out text-white text-[13px]" onClick={onClickInactive}>
         borradores

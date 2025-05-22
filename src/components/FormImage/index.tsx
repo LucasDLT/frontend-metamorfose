@@ -416,48 +416,72 @@ export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
         </div>
         {/* bloque selector para la categoria */}
 
-        {selectCategory ? (
-          <div className="flex flex-col bg-black/80 h-[100px] w-[250px] text-center p-2.5  mt-1">
-            <label className="mt-2" htmlFor="category">
-              CREAR CATEGORIA
-            </label>
-            <input
-              type="text"
-              name="category"
-              id="category"
-              onChange={handleCategoryInputChange}
-              value={formImg.category?.name.toUpperCase() || ""}
-              className="text-white bg-transparent border border-gray-100  focus:outline-none animate-pulse"
-            />
-            <button
-              onClick={handleActiveChange}
-              className="hover:text-gray-500 text-white animate-pulse mt-2"
-            >
-              * seleccionar existente?
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-col bg-black/80 h-[100px] w-[250px] text-center p-2 rounded mt-1">
-            <SelectCategory
-              onChange={handleCategoryChange}
-              value={formImg.category?.name || ""}
-              style={{
-                color: "white",
-                backgroundColor: "transparent",
-                outline: "none",
-                textAlign: "center",
-                marginTop: "10px",
-                animation: "pulse 2s infinite",
-              }}
-            />
-            <button
-              onClick={() => setSelectCategory(true)}
-              className="hover:text-gray-500 text-white animate-pulse mt-8"
-            >
-              * crear categoria?
-            </button>
-          </div>
-        )}
+       {pathName === "/navegacion/carga" ? (
+  selectCategory ? (
+    // Vista con input (crear categoría)
+    <div className="flex flex-col bg-black/80 h-[100px] w-[250px] text-center p-2.5 mt-1">
+      <label className="mt-2" htmlFor="category">
+        CREAR CATEGORIA
+      </label>
+      <input
+        type="text"
+        name="category"
+        id="category"
+        onChange={handleCategoryInputChange}
+        value={formImg.category?.name.toUpperCase() || ""}
+        className="text-white bg-transparent border border-gray-100 focus:outline-none animate-pulse"
+      />
+      <button
+        onClick={handleActiveChange}
+        className="hover:text-gray-500 text-white animate-pulse mt-2"
+      >
+        * seleccionar existente?
+      </button>
+    </div>
+  ) : (
+    // Vista con select (seleccionar categoría existente)
+    <div className="flex flex-col bg-black/80 h-[100px] w-[250px] text-center p-2 rounded mt-1">
+      <SelectCategory
+        onChange={handleCategoryChange}
+        value={formImg.category?.name || ""}
+        style={{
+          color: "white",
+          backgroundColor: "transparent",
+          outline: "none",
+          textAlign: "center",
+          marginTop: "10px",
+          animation: "pulse 2s infinite",
+        }}
+      />
+      <button
+        onClick={() => setSelectCategory(true)}
+        className="hover:text-gray-500 text-white animate-pulse mt-8"
+      >
+        * crear categoria?
+      </button>
+    </div>
+  )
+) : (
+  // Cualquier otro path: solo el selector (modo edición)
+  <div className="flex flex-col bg-black/80 h-[100px] w-[250px] text-center p-2 rounded mt-1">
+    <label className="mt-2" htmlFor="category">
+      SELECCIONAR CATEGORIA
+    </label>
+    <SelectCategory
+      onChange={handleCategoryChange}
+      value={formImg.category?.name || ""}
+      style={{
+        color: "white",
+        backgroundColor: "transparent",
+        outline: "none",
+        textAlign: "center",
+        marginTop: "10px",
+        animation: "pulse 2s infinite",
+      }}
+    />
+  </div>
+)}
+
         {/* bloque para la fecha y el active*/}
         <div className="grid grid-cols-2 text-center mt-1 w-[250px]">
           <div className="flex flex-col bg-black/80 rounded-bl-lg
