@@ -73,7 +73,7 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
       setToggle(false);
     }  catch (error: unknown) {
    if (error instanceof Error) {
-     toast.error(`${error.message}`, {
+     toast.error(`ocurrio un error en el registro`, {
        style: {
          borderRadius: "10px",
          background: "#333",
