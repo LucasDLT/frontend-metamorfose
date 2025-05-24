@@ -72,23 +72,41 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
       }});
       setToggle(false);
     }  catch (error: unknown) {
-   if (error instanceof Error) {
-     toast.error(`ocurrio un error en el registro`, {
-       style: {
-         borderRadius: "10px",
-         background: "#333",
-         color: "#fff",
-         height: "25px",
-         width: "200px",
-         backgroundColor: "#6666662f",
-         fontFamily: "afacad",
-         display: "flex",
-         alignItems: "center",
-         justifyContent: "center",
-       },
-     });
-   }
+  if (error instanceof Error) {
+    if (error.message.includes("Failed to fetch")) {
+      toast.error("No se pudo conectar con el servidor. Intenta espera 60seg y vuelve a intentar.", {
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+          height: "40px",
+          width: "300px",
+          backgroundColor: "#6666662f",
+          fontFamily: "afacad",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        },
+      });
+    } else {
+      toast.error(error.message, {
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+          height: "30px",
+          width: "300px",
+          backgroundColor: "#6666662f",
+          fontFamily: "afacad",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        },
+      });
+    }
+  }
 }
+
 
   };
 
