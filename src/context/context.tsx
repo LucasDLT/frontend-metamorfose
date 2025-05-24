@@ -79,8 +79,7 @@ export const ContextProvider = ({ children }: IContextProvider) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-        },
-        credentials: "include",
+        }
       });
       if (!response.ok)
         throw new Error("Error en la solicitud de categorias en Contexto");
@@ -126,7 +125,6 @@ export const ContextProvider = ({ children }: IContextProvider) => {
     try {
       const response = await fetch(`${PORT}/photos/active`, {
         method: "GET",
-        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
