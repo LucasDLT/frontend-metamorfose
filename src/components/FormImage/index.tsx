@@ -305,7 +305,9 @@ export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
     ? "Vas a cargar una imagen, ¿estás seguro?"
     : "Vas a modificar la imagen, ¿estás seguro?";
 
-  const confirmTitle = pathName === "carga" ? "Cargar Imagen" : "Modificar Imagen";
+  const confirmTitle = pathName === "/navegacion/carga" ? "Cargar Imagen" : "Modificar Imagen";
+  const confirmButtonText = pathName === "/navegacion/carga" ? "Cargar" : "Modificar";
+  const tittleForm = pathName === "/navegacion/carga" ? "Carga de Imagen" : "Modificar Imagen";
 
   return (
     <>
@@ -318,7 +320,7 @@ export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
       {/*bloque para la imagen */}
       <div className="grid place-items-center bg-gradient-to-t from-black to-black/10 p-2 rounded animate-move-right">
         <h1 className="text-3xl text-center font-bold text-white drop-shadow-[2px_2px_2px_black]">
-          CARGA DE IMAGEN
+          {tittleForm}
         </h1>
         <label 
         htmlFor="url"          
@@ -521,7 +523,7 @@ export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
           </div>
         </div>
         <button className="text-sm  hover:text-gray-500 flex flex-col justify-center items-center rounded-lg  w-40 h-10 bg-gradient-to-t from-black to-zinc/10 ">
-          CARGAR
+          {confirmButtonText}
         </button>
         {/* bloque para ver errores*/}
         <div className="flex flex-col w-[270px] rounded drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] ">

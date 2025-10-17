@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { Context, Ifotos } from "@/context/context";
 import { FormImage } from "@/components/FormImage";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export const EditImage = ({ id }: { id: string }) => {
   const PORT = process.env.NEXT_PUBLIC_API_URL;

@@ -13,7 +13,6 @@ import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import { IsActiveFotoBtn } from "@/components/IsAtiveFotoBtn";
 import { Loader } from "@/components/Loader";
 
-
 export default function Multimedia() {
   const {
     login,
@@ -40,10 +39,15 @@ export default function Multimedia() {
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [fotoIdToDelete, setFotoIdToDelete] = useState<number | null>(null);
   const [editedName, setEditedName] = useState(selectedCategory?.name || "");
-  const [filterType, setFilterType] = useState<"active" | "inactive" | "all">("all");
+  const [filterType, setFilterType] = useState<"active" | "inactive" | "all">(
+    "all"
+  );
   const [updateModalIsOpen, setUpdateModalIsOpen] = useState<boolean>(false);
-  const [categoryIdToDelete, setCategoryIdToDelete, ] = useState<number| null>(null);
-  const [openModalDeleteCategory, setOpenModalDeleteCategory] = useState<boolean>(false);
+  const [categoryIdToDelete, setCategoryIdToDelete] = useState<number | null>(
+    null
+  );
+  const [openModalDeleteCategory, setOpenModalDeleteCategory] =
+    useState<boolean>(false);
   const [inactiveInCategory, setInactiveInCategory] = useState<boolean>(false);
   const [categoryUpdateData, setCategoryUpdateData] = useState<{
     id: number;
@@ -54,9 +58,8 @@ export default function Multimedia() {
   useEffect(() => {
     setEditedName(selectedCategory?.name || ""); // Cada vez que cambia la categoría seleccionada, reseteamos
   }, [selectedCategory]);
-  
-  const PORT = process.env.NEXT_PUBLIC_API_URL;
 
+  const PORT = process.env.NEXT_PUBLIC_API_URL;
 
   const handleRequestDelete = (categoryId: number) => {
     setCategoryIdToDelete(categoryId);
@@ -68,52 +71,51 @@ export default function Multimedia() {
   ) => {
     event?.preventDefault();
     if (!categoryIdToDelete) return;
-      setLoading(true);
-      try {
-        const response = await fetch(`${PORT}/categories/${categoryIdToDelete}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
+    setLoading(true);
+    try {
+      const response = await fetch(`${PORT}/categories/${categoryIdToDelete}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
-        if (!response.ok) throw new Error("Error eliminando la categoría");
+      if (!response.ok) throw new Error("Error eliminando la categoría");
 
-        // Actualizamos la lista en el contexto
-        setCategory((prev) => prev.filter((cat) => cat.id !== categoryIdToDelete));
-        toast.success("categoría eliminada",{
-          style: {
-            borderRadius: "10px",
-            background: "#333",
-            color: "#fff",
-            height: "20px",
-            width: "200px",
-            backgroundColor: "#6666662f",
-            fontFamily: " afacad",
-          },
-        });
-      } catch (error) {
-        console.error("Error al eliminar categoría:", error);
-      }finally {
-        setLoading(false);
-        setOpenModalDeleteCategory(false);
-        setCategoryIdToDelete(null);
-        setEditedName("");
-      }
-    
+      // Actualizamos la lista en el contexto
+      setCategory((prev) =>
+        prev.filter((cat) => cat.id !== categoryIdToDelete)
+      );
+      toast.success("categoría eliminada", {
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+          height: "20px",
+          width: "200px",
+          backgroundColor: "#6666662f",
+          fontFamily: " afacad",
+        },
+      });
+    } catch (error) {
+      console.error("Error al eliminar categoría:", error);
+    } finally {
+      setLoading(false);
+      setOpenModalDeleteCategory(false);
+      setCategoryIdToDelete(null);
+      setEditedName("");
+    }
   };
 
- 
   const toggleModal = (foto: Ifotos | null) => {
     setSelectedFoto(foto);
     setIsModalOpen(!isModalOpen);
   };
 
-
   const handleDelete = async (login: boolean, id: number) => {
     if (!login) return;
-  setLoading(true)
+    setLoading(true);
 
     try {
       const response = await fetch(`${PORT}/photos/${id}`, {
@@ -138,7 +140,7 @@ export default function Multimedia() {
           };
         });
         setCategory(updatedCategories);
-        toast.success("Foto eliminada",{
+        toast.success("Foto eliminada", {
           style: {
             borderRadius: "10px",
             background: "#333",
@@ -152,11 +154,10 @@ export default function Multimedia() {
       }
     } catch (error) {
       console.error(error);
-    }finally {
+    } finally {
       getActiveFotos(login);
       getInactiveFotos(login);
       setLoading(false);
-
     }
   };
 
@@ -202,17 +203,30 @@ export default function Multimedia() {
         );
         // Si hay una categoría seleccionada, usa las fotos de esa categoría
         setLocalFoto(
-          filteredFotos.sort((a: Ifotos, b: Ifotos) => b.categoryOrder! - a.categoryOrder!)
+          filteredFotos.sort(
+            (a: Ifotos, b: Ifotos) => b.categoryOrder! - a.categoryOrder!
+          )
         );
       } else {
         // Si no hay categoría seleccionada, usa todas las fotos y ordena globalmente
         setGlobalFotos(
           fotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.globalOrder!)
         );
-setActiveFotos(activeFotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.globalOrder!));
-   setInactiveFotos(inactiveFotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.globalOrder!));     inactiveFotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.globalOrder!);
+        setActiveFotos(
+          activeFotos.sort(
+            (a: Ifotos, b: Ifotos) => b.globalOrder! - a.globalOrder!
+          )
+        );
+        setInactiveFotos(
+          inactiveFotos.sort(
+            (a: Ifotos, b: Ifotos) => b.globalOrder! - a.globalOrder!
+          )
+        );
+        inactiveFotos.sort(
+          (a: Ifotos, b: Ifotos) => b.globalOrder! - a.globalOrder!
+        );
       }
-    }
+    } 
   }, [fotos, login, selectedCategory]);
 
   const handleCategoryChange = (selectedCategory: ICategory | null) => {
@@ -245,8 +259,7 @@ setActiveFotos(activeFotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.glo
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: categoryName },
-        ),
+        body: JSON.stringify({ name: categoryName }),
         credentials: "include",
       });
 
@@ -310,13 +323,12 @@ setActiveFotos(activeFotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.glo
           justifyContent: "center",
         },
       });
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
-    
-  const handlePutIds = async (ids: number[]) => {
 
+  const handlePutIds = async (ids: number[]) => {
     if (ids.length !== 2) {
       alert("no se recibieron ids en handlePutIds");
       return;
@@ -326,7 +338,7 @@ setActiveFotos(activeFotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.glo
       id1: ids[0],
       id2: ids[1],
     };
-    
+
     try {
       let response;
       if (selectedCategory) {
@@ -337,7 +349,6 @@ setActiveFotos(activeFotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.glo
           },
           body: JSON.stringify(idsObjet),
           credentials: "include",
-
         });
       } else {
         response = await fetch(`${PORT}/photos/updateorderglobal`, {
@@ -348,9 +359,8 @@ setActiveFotos(activeFotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.glo
           body: JSON.stringify(idsObjet),
           credentials: "include",
         });
-
       }
-      
+
       if (!response.ok) {
         throw new Error("Error al intercambiar fotos");
       }
@@ -362,107 +372,120 @@ setActiveFotos(activeFotos.sort((a: Ifotos, b: Ifotos) => b.globalOrder! - a.glo
       }
     } catch (error) {
       console.error("Error al intercambiar fotos:", error);
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
-  const handleDrop = async (event: React.DragEvent<HTMLDivElement>, dropTargetId: number) => {
+  const handleDrop = async (
+    event: React.DragEvent<HTMLDivElement>,
+    dropTargetId: number
+  ) => {
     event.preventDefault();
-  
+
     const draggedIdStr = event.dataTransfer.getData("text/plain");
     const draggedId = parseInt(draggedIdStr, 10);
-  
-    console.log("Drop - id arrastrado:", draggedId, "id soltado:", dropTargetId);
-  
+
+    console.log(
+      "Drop - id arrastrado:",
+      draggedId,
+      "id soltado:",
+      dropTargetId
+    );
+
     // Evita acciones innecesarias o duplicadas
     if (!draggedId || !dropTargetId || draggedId === dropTargetId) return;
-  
+
     const idsToSwap = [draggedId, dropTargetId];
     await handlePutIds(idsToSwap);
   };
-  
-  
-    // Nueva función para manejar drag start
-const handleDragStart = (e: React.DragEvent<HTMLDivElement>, id: number) => {
-  e.dataTransfer.setData("text/plain", id.toString());
-  console.log("drag start", id);
-  document.querySelectorAll(".clone").forEach(c => c.remove()); // Limpieza previa
 
-  const img = e.currentTarget.cloneNode(true) as HTMLElement;
-  const imagen= img.querySelector("img") as HTMLImageElement;
-  imagen.style.height  = "10rem";
-  imagen.style.width = "15rem";
-  imagen.style.borderRadius = "5px";
-  imagen.style.border = "1px solid #000000";
-  imagen.style.position = "absolute";
-  imagen.style.top = "-99999px"; 
-  imagen.classList.add("clone");
-  document.body.appendChild(imagen);
-  e.dataTransfer.setDragImage(imagen, 0, 0);
+  // Nueva función para manejar drag start
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, id: number) => {
+    e.dataTransfer.setData("text/plain", id.toString());
+    console.log("drag start", id);
+    document.querySelectorAll(".clone").forEach((c) => c.remove()); // Limpieza previa
 
-};
-const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
-  e.preventDefault();
-  const clones = document.querySelectorAll(".clone");
-  clones.forEach((clone) => clone.remove());
-}
-const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-  e.preventDefault();
-  e.stopPropagation();
-  handleAutoScroll(e);
-}
+    const img = e.currentTarget.cloneNode(true) as HTMLElement;
+    const imagen = img.querySelector("img") as HTMLImageElement;
+    imagen.style.height = "10rem";
+    imagen.style.width = "15rem";
+    imagen.style.borderRadius = "5px";
+    imagen.style.border = "1px solid #000000";
+    imagen.style.position = "absolute";
+    imagen.style.top = "-99999px";
+    imagen.classList.add("clone");
+    document.body.appendChild(imagen);
+    e.dataTransfer.setDragImage(imagen, 0, 0);
+  };
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const clones = document.querySelectorAll(".clone");
+    clones.forEach((clone) => clone.remove());
+  };
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleAutoScroll(e);
+  };
 
-const handleAutoScroll = (event: React.DragEvent<HTMLDivElement>) => {
-  const scrollContainer = document.getElementById("scroolPersonalizado");
-  const threshold = 100; // Margen de sensibilidad en px
-  const scrollSpeed = 10;
+  const handleAutoScroll = (event: React.DragEvent<HTMLDivElement>) => {
+    const scrollContainer = document.getElementById("scroolPersonalizado");
+    const threshold = 100; // Margen de sensibilidad en px
+    const scrollSpeed = 10;
 
-  if (!scrollContainer) return;
+    if (!scrollContainer) return;
 
-  const rect = scrollContainer.getBoundingClientRect();
-  const mouseY = event.clientY;
+    const rect = scrollContainer.getBoundingClientRect();
+    const mouseY = event.clientY;
 
-  const maxScrollTop = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+    const maxScrollTop =
+      scrollContainer.scrollHeight - scrollContainer.clientHeight;
 
-if (mouseY < rect.top + threshold) {
-  scrollContainer.scrollTop = Math.max(0, scrollContainer.scrollTop - scrollSpeed);
-} else if (mouseY > rect.bottom - threshold) {
-  scrollContainer.scrollTop = Math.min(maxScrollTop, scrollContainer.scrollTop + scrollSpeed);
-}
+    if (mouseY < rect.top + threshold) {
+      scrollContainer.scrollTop = Math.max(
+        0,
+        scrollContainer.scrollTop - scrollSpeed
+      );
+    } else if (mouseY > rect.bottom - threshold) {
+      scrollContainer.scrollTop = Math.min(
+        maxScrollTop,
+        scrollContainer.scrollTop + scrollSpeed
+      );
+    }
+  };
 
-};
-
-//funcion para el mapeo de estados de las fotos
-const getFotosToDisplay = () => {
+  //funcion para el mapeo de estados de las fotos
+  const getFotosToDisplay = () => {
     if (categoryPage) {
-    if (!selectedCategory) return []; 
+      if (!selectedCategory) return [];
 
-    if (inactiveInCategory) {
-      const inactiveFotosInCategory = localFoto.filter((foto: Ifotos) => foto.active === false);
-      return inactiveFotosInCategory;
+      if (inactiveInCategory) {
+        const inactiveFotosInCategory = localFoto.filter(
+          (foto: Ifotos) => foto.active === false
+        );
+        return inactiveFotosInCategory;
+      }
+
+      return localFoto.filter((foto: Ifotos) => foto.active === true);
+    }
+    if (filterType === "active") {
+      return activeFotos;
     }
 
-    return localFoto.filter((foto: Ifotos) => foto.active === true);
-  }
-  if (filterType === "active") {
-    return activeFotos;
-  }
+    if (filterType === "inactive") {
+      return inactiveFotos;
+    }
 
-  if (filterType === "inactive") {
-    return inactiveFotos;
-  }
+    return globalFotos;
+  };
 
-  return globalFotos;
-};
-
-
-const delays = ["delay-300", "delay-500", "delay-700", "delay-1000"];
+  const delays = ["delay-300", "delay-500", "delay-700", "delay-1000"];
 
   return (
     <div className="w-[330px] flex justify-center items-center sm:w-[455px] justify-center md:w-[600px] lg:w-[850px] xl:w-[1110px] 2xl:w-[1300px] absolute top-16 z-50 flex justify-center items-center">
       {categoryPage ? (
         <CustomSelectCategory
-        clasName="animate-fade-right"
+          clasName="animate-fade-right"
           style={{
             color: "white",
             backgroundColor: "transparent",
@@ -472,22 +495,26 @@ const delays = ["delay-300", "delay-500", "delay-700", "delay-1000"];
           onChange={handleCategoryChange}
           onRequestDeleteCategory={handleRequestDelete}
         />
-      ):
-      <div>
-
-        <IsActiveFotoBtn
-       onClickActive={() => setFilterType("active")}
-       onClickInactive={() => setFilterType("inactive")}
-       onClickAll={() => setFilterType("all")}
-       />
-      </div>
-      }
+      ) : (
+        <div>
+          <IsActiveFotoBtn
+            onClickActive={() => setFilterType("active")}
+            onClickInactive={() => setFilterType("inactive")}
+            onClickAll={() => setFilterType("all")}
+            active={filterType}
+          />
+        </div>
+      )}
       {categoryPage && selectedCategory && (
         <div className=" flex items-center justify-end text-white tracking-wide absolute top-[-26px] gap-1 lg:gap-2 xl:gap-3 text-[10px]">
-          <label htmlFor="categoryName" className="text-sm hidden md:block lg:block xl:block">Fotos en categoría: </label>
+          <label
+            htmlFor="categoryName"
+            className="text-sm hidden md:block lg:block xl:block"
+          >
+            Fotos en categoría:{" "}
+          </label>
 
           <input
-            
             id="categoryName"
             type="text"
             className="text-white text-center bg-transparent outline-none uppercase border border-gray-400 rounded w-[130px] lg:w-[140px] xl:w-[150px]  backdrop-blur-sm animate-pulse"
@@ -499,63 +526,81 @@ const delays = ["delay-300", "delay-500", "delay-700", "delay-1000"];
             onClick={() =>
               confirmUpdateCategory(selectedCategory?.id as number, editedName)
             }
-            
             className="hover:text-gray-400 transition duration-300 ease-in-out text-white text-center bg-transparent outline-none uppercase flex items-center gap-3 justify-center border border-gray-400 rounded w-[140px] lg:w-[150px] xl:w-[200px] backdrop-blur-sm"
           >
-CAMBIAR NOMBRE  
-<div>
-          <ArrowDownUpIcon data-tip="Guardar" className="w-5 h-5" />
-  </div>          
+            CAMBIAR NOMBRE
+            <div>
+              <ArrowDownUpIcon data-tip="Guardar" className="w-5 h-5" />
+            </div>
           </button>
-
 
           <button
             onClick={() => setInactiveInCategory(!inactiveInCategory)}
             className="backdrop-blur-sm border border-gray-400 hover:border-gray-500 transition duration-300 ease-in-out rounded w-[130px] lg:w-[140px] xl:w-[150px]  animate-pulse "
           >
-           {inactiveInCategory ? "SUBIDAS" : " BORRADORES"}
-            </button>
+            {inactiveInCategory ? "SUBIDAS" : " BORRADORES"}
+          </button>
         </div>
       )}
 
       {login ? (
         <OverlayScrollbarsComponent
-        id="scroolPersonalizado"
+          id="scroolPersonalizado"
           options={{ scrollbars: { autoHide: "scroll" } }}
           style={{
             maxHeight: "80vh",
             height: "74vh",
             overflowY: "auto",
-            transition: 'duration 300ms ease in-out'
+            transition: "duration 300ms ease in-out",
           }}
         >
-<div className="grid grid-cols-1 gap-2 font-afacad rounded h-full justify-items-center items-center sm:w-full sm:grid-cols-2 md:w-full lg:w-full lg:grid-cols-3 xl:w-full lg:grid-cols-3 flex flex-wrap justify-center">
-                {getFotosToDisplay().length === 0 ?( 
-                  <div className="text-white/70 font-bold tracking-wider text-center font-afacad text-xl flex items-center justify-center absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-fade-in animate-pulse">No hay fotos en esta seccion</div>) 
-                :getFotosToDisplay().map((foto, index) => (
-                   <div
-        key={foto.id}
-        className={`animate-fade-in ${delays[index % delays.length]}`}
-      >
-                  <Card
+          <div className="grid grid-cols-1 gap-2 font-afacad rounded h-full justify-items-center items-center sm:w-full sm:grid-cols-2 md:w-full lg:w-full lg:grid-cols-3 xl:w-full lg:grid-cols-3 flex flex-wrap justify-center">
+            {getFotosToDisplay().length === 0 ? (
+              <div className="text-white/70 font-bold tracking-wider text-center font-afacad text-xl flex items-center justify-center absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-fade-in animate-pulse">
+                No hay fotos en esta seccion
+              </div>
+            ) : (
+              getFotosToDisplay().map((foto, index) => (
+                <div
                   key={foto.id}
-                  id={foto.id}
-                  url={foto.url!}
-                  title={foto.title!}
-                  history={foto.history}
-                  category={foto.category}
-                  createdAt={foto.createdAt}
-                  active={foto.active}
-                  handleDelete={() => confirmDelete(foto.id as number)}
-                  handleUpdate={() => handleUpdate(foto.id as number)}
-                  handleModal={() => toggleModal(foto as Ifotos)}
-                  onDragOver={filterType === "all" && !categoryPage ? undefined : handleDragOver}
-                  onDrop={filterType === "all" && !categoryPage ? undefined : handleDrop}
-                  onDragStart={filterType === "all" && !categoryPage ? undefined : handleDragStart}
-                  onDragEnd={filterType === "all" && !categoryPage ? undefined : handleDragEnd}     
+                  className={`animate-fade-in ${delays[index % delays.length]}`}
+                >
+                  <Card
+                    key={foto.id}
+                    id={foto.id}
+                    url={foto.url!}
+                    title={foto.title!}
+                    history={foto.history}
+                    category={foto.category}
+                    createdAt={foto.createdAt}
+                    active={foto.active}
+                    handleDelete={() => confirmDelete(foto.id as number)}
+                    handleUpdate={() => handleUpdate(foto.id as number)}
+                    handleModal={() => toggleModal(foto as Ifotos)}
+                    onDragOver={
+                      filterType === "all" && !categoryPage
+                        ? undefined
+                        : handleDragOver
+                    }
+                    onDrop={
+                      filterType === "all" && !categoryPage
+                        ? undefined
+                        : handleDrop
+                    }
+                    onDragStart={
+                      filterType === "all" && !categoryPage
+                        ? undefined
+                        : handleDragStart
+                    }
+                    onDragEnd={
+                      filterType === "all" && !categoryPage
+                        ? undefined
+                        : handleDragEnd
+                    }
                   />
-                  </div>
-                ))}
+                </div>
+              ))
+            )}
             <ConfirmModal
               isOpen={openModalDeleteCategory}
               onClose={() => setOpenModalDeleteCategory(false)}
@@ -563,7 +608,7 @@ CAMBIAR NOMBRE
               title={"Eliminar"}
               message={"Estas seguro de eliminar esta categoría?"}
             />
-             <ConfirmModal
+            <ConfirmModal
               isOpen={modalIsOpen}
               onClose={() => setModalIsOpen(false)}
               onConfirm={handleConfirmDelete}
@@ -578,28 +623,27 @@ CAMBIAR NOMBRE
               message={`¿Quieres actualizar el nombre de la categoría a "${categoryUpdateData?.name}"?`}
             />
           </div>
-            <Modal isOpen={isModalOpen} onClose={() => toggleModal(null)}>
-              <div className=" 
+          <Modal isOpen={isModalOpen} onClose={() => toggleModal(null)}>
+            <div
+              className=" 
               xl:w-[40vw] xl:h-[auto]
               lg:w-[48vw] lg:h-[auto]
               md:w-[58w] md:h-[auto]
               sm:w-[64vw] sm:h-[auto]
               w-[79vw] h-[auto] bg-transparent
-              flex justify-center items-center animate-fade-in">
-
-            
-                <Image
-                  className="bg-gray-100 w-full h-full object-cover rounded-sm"
-                  src={imageUrl}
-                  alt={title || "Imagen"}
-                  width={4120}
-                  height={2848}
-                />
-              </div>
-            </Modal>
+              flex justify-center items-center animate-fade-in"
+            >
+              <Image
+                className="bg-gray-100 w-full h-full object-cover rounded-sm"
+                src={imageUrl}
+                alt={title || "Imagen"}
+                width={4120}
+                height={2848}
+              />
+            </div>
+          </Modal>
         </OverlayScrollbarsComponent>
-      ) : 
-      (
+      ) : (
         <div className="flex justify-center items-center">
           <Loader />
         </div>

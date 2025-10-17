@@ -55,6 +55,8 @@ export interface IContextProvider {
   children: ReactNode;
 }
 
+//estoy buscando un delay que ocurre en el active fotos, en ese seteo de estado le estoy pasando fotos, osea que estas son las que se estan organizando y en algun lugar se estan filtrando antes de mostrarse. Primero estaba buscando activeFotos para ver si tenia un sort,pero si ya ordeno fotos y esta variable es la que setea el estado en el contexto, no tiene sentio ordenarlas nuevamente, sino filtrar para que las que pase aca sean solo las activas. Creo que pense eso cuando escribi esto hace unos meses. Y el delay debe ser por que entre que me paso de vista de carga al multimedia, no se llega a actualizar el orden por la foto si aparece en el multimedia, pero el multimedia en general aparece desorganizado. En el futuro veremos si podemos arreglar eso.Tambien deberia buscar si el backend tiene algo que ver por que las fotos las pido mediante ese servicio que vi que pide las imagenes de user id 1, y ya tuvimos problemas 
+
 export const ContextProvider = ({ children }: IContextProvider) => {
   const PORT = process.env.NEXT_PUBLIC_API_URL;
 
