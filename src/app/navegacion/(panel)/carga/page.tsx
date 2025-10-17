@@ -13,7 +13,7 @@ export default function Carga() {
     if (!login) return;
     setLoading(true);
 
-    try {
+    try { 
       const response = await fetch(`${PORT}/photos/upload`, {
         method: "POST",
         credentials: "include",
