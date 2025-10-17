@@ -563,4 +563,3 @@ export function FormImage ({ onSubmit , defaultValue, mode }: IformImage) {
       </>
     );
 }
-

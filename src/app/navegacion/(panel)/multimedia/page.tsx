@@ -171,8 +171,6 @@ export default function Multimedia() {
   ) => {
     event?.preventDefault();
     if (fotoIdToDelete == null) return;
-    console.log("fotoIdToDelete", fotoIdToDelete);
-
     await handleDelete(login, fotoIdToDelete);
     setModalIsOpen(false);
     setFotoIdToDelete(null);
@@ -385,13 +383,6 @@ export default function Multimedia() {
     const draggedIdStr = event.dataTransfer.getData("text/plain");
     const draggedId = parseInt(draggedIdStr, 10);
 
-    console.log(
-      "Drop - id arrastrado:",
-      draggedId,
-      "id soltado:",
-      dropTargetId
-    );
-
     // Evita acciones innecesarias o duplicadas
     if (!draggedId || !dropTargetId || draggedId === dropTargetId) return;
 
@@ -402,7 +393,6 @@ export default function Multimedia() {
   // Nueva función para manejar drag start
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, id: number) => {
     e.dataTransfer.setData("text/plain", id.toString());
-    console.log("drag start", id);
     document.querySelectorAll(".clone").forEach((c) => c.remove()); // Limpieza previa
 
     const img = e.currentTarget.cloneNode(true) as HTMLElement;

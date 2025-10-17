@@ -92,7 +92,7 @@ export const CustomSelectCategory: React.FC<IselectCategoryProps> = ({
               {(!categoria.images || categoria.images.length === 0) && (
                 <button
                   onClick={(e) => {
-                    e.stopPropagation(); // Evita que se dispare selección al hacer click en borrar
+                    e.stopPropagation(); // dejar esto, evita que se dispare selección al hacer click en borrar
                     onRequestDeleteCategory?.(categoria.id);
                   }}
                   className="ml-2"
