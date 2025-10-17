@@ -38,8 +38,6 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
     setErrors(validateForm(form));
 
     if (Object.keys(errors).length) {
-      console.log(errors);
-
       return
     }
     const { confirmPassword, ...formData } = form;
@@ -55,7 +53,6 @@ export const FormRegister:React.FC<IformRegisterProps>=({setToggle})=> {
       if (!response.ok) {
         const errorResponse = await response.json();
         const errorMessage = errorResponse.message;
-        console.error("Error en la solicitud:", errorMessage);
         throw new Error( errorMessage);
       }
       toast.success(`Registro exitoso` ,{ style: {

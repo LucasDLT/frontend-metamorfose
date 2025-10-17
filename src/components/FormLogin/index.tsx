@@ -23,7 +23,6 @@ export const FormLogin: React.FC<FormLoginProps> = ({ setToggle }) => {
   const [isOpenEyes, setIsOpenEyes] = useState(false);
   const router = useRouter();
   const PORT = process.env.NEXT_PUBLIC_API_URL;
-  console.log(PORT);
 
   async function postForm(data: Inputs) {
     try {
