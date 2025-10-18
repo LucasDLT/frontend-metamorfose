@@ -25,7 +25,6 @@ export const LogoutBtn = () => {
         throw new Error("Hubo un error en la solicitud" + errorResponse);
       }
       setLogin(false);
-      const data = await response.json();
       document.cookie =
         "isLogin=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       toast.success("Adios!", {
